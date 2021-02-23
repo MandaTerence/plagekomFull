@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 class AuthentificationService implements CustomAuthService{
 
 
-    public static $columnNameId = 'Matricule';
-    public static $columnNamePassword = 'Mode_de_pass_login';
-    public static $authorisedIdprefix = 'OTO*';
+    protected const COLUMN_NAME_ID = 'Matricule';
+    protected const COLUMN_NAME_PASSWORD = 'Mode_de_pass_login';
+    /// TO-DO change AUTHORISED_ID_PREFIX
+    protected const AUTHORISED_ID_PREFIX = ['OTO','test'];
 
     public function __construct()
     {
@@ -19,7 +20,21 @@ class AuthentificationService implements CustomAuthService{
     }
 
     public function checkUtilisateur(string $matricule,string $password){
+        /*
         if(($matricule!=null)&&($matricule!="")&&($password!=null)&&($password!=""))
             return Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
+        */
+        if(($matricule!=null)&&($matricule!="")&&($password!=null)&&($password!="")){
+            $authorised = false;
+            foreach(self::AUTHORISED_ID_PREFIX as $prefix){
+                if(str_starts_with($matricule,$prefix)){
+                    $authorised = true;
+                    break;
+                }
+            }
+            if($authorised){
+                return Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
+            }
+        }
     }
 }

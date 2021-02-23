@@ -63,7 +63,7 @@ class UtilisateurController extends Controller
             }
             else {
                 $success = false;
-                $message = 'Mot de passe ou matricule incorrect '.$matricule.' p '.$password;;
+                $message = 'Mot de passe ou matricule incorrect' ;
             }
         }
 
