@@ -7,10 +7,17 @@
             <nav class="d-none d-lg-block navbar navbar-expand-lg navbar-dark bg-primary">
             <!-- for logged-in user-->
             <div class="navbar-nav" v-if="isLoggedIn">
+                <a class="nav-item nav-link" style="cursor: pointer;" v-on:click="flipMenu"><span class="navbar-toggler-icon"></span></a>
                 <router-link to="/dashboard" class="nav-item nav-link">Dashboard</router-link>
                 <router-link to="/books" class="nav-item nav-link">Books</router-link>
                 <a class="nav-item nav-link" style="cursor: pointer;" @click="logout">Logout</a>
-                <a class="nav-item nav-link" style="cursor: pointer;" v-on:click="flipMenu">menu</a>
+                <div class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" style="color:white">{{ name }}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <!-- for non-logged user-->
             <div class="navbar-nav" v-else>
@@ -18,13 +25,12 @@
                 <router-link to="/login" class="nav-item nav-link">login</router-link>
                 <router-link to="/register" class="nav-item nav-link">Register</router-link>
                 <router-link to="/about" class="nav-item nav-link">About</router-link>
-
             </div>
             </nav>
             <nav class="d-block d-lg-none navbar navbar-expand-lg navbar-dark bg-primary">
                 <!-- for logged-in user-->
                 <div class="navbar-nav" v-if="isLoggedIn">
-                    <a class="nav-item nav-link" style="cursor: pointer;" v-on:click="flipMenu">menu</a>
+                    <a class="nav-item nav-link" style="cursor: pointer;" v-on:click="flipMenu"><span class="navbar-toggler-icon"></span></a>
                 </div>
                 <!-- for non-logged user-->
                 <div class="navbar-nav" v-else>
@@ -34,9 +40,6 @@
         </div>
     </header>
     <div class="container">
-        <div class="row">
-            
-        </div>
         <div class="row">
             <div id="mySidebar" class="sidebar">
                 <a href="javascript:void(0)" class="closebtn" v-on:click="flipMenu">&times;</a>
@@ -67,6 +70,7 @@ export default {
     name: "App",
     data() {
         return {
+            name: null,
             isLoggedIn: false,
             displayMenu: true
         }
@@ -74,6 +78,9 @@ export default {
     created() {
         if (window.Laravel.isLoggedin) {
             this.isLoggedIn = true
+        }
+        if (window.Laravel.user) {
+            this.name = window.Laravel.user.Nom;
         }
     },
     methods: {
