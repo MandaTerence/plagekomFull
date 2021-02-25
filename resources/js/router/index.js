@@ -1,5 +1,7 @@
 import {createWebHistory, createRouter} from "vue-router";
 
+import CreationEquipe from '../pages/CreationEquipe';
+
 import Home from '../pages/Home';
 import About from '../pages/About';
 import Login from '../pages/Login';
@@ -10,6 +12,11 @@ import AddBook from '../components/AddBook';
 import EditBook from '../components/EditBook';
 
 export const routes = [
+    {
+        name: 'creationEquipe',
+        path: '/creationEquipe',
+        component: CreationEquipe
+    },
     {
         name: 'home',
         path: '/',
