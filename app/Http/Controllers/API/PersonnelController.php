@@ -24,4 +24,97 @@ class PersonnelController extends Controller
         /*$personnels = Personnel::all()->toArray();
         return array_reverse($personnels);*/
     }
+
+    public function getFirstWhere(Request $request){
+        $conditions = [];
+        if(isset($request->criteres)){
+            $donnee = json_decode($request->criteres);
+            foreach($donnee as $column => $value){
+                $conditions[] = [$column,'like',$value];
+            }
+        }
+        $personnel = Personnel::where($conditions)
+            ->first();
+        if($personnel){
+            $response = [
+                'success' => true,
+                'message' => 'resultat trouvé',
+                'personnel' => $personnel,
+            ];
+            return response()->json($response);
+        }
+        else{
+            $response = [
+                'success' => false,
+                'message' => 'aucun resultat trouvé '.$request->criteres,
+                'personnel' => null,
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function getMatriculeByFonction(Request $request){
+        if(isset($request->fonction)){
+            $conditions = [];
+            $conditions[] = ['Fonction_actuelle','=',$request->fonction];
+            if(isset($request->search)){
+                $conditions[] = ['Matricule','like','%'.$request->search.'%'];
+            }
+            $data = Personnel::select('Matricule')
+            ->where($conditions)
+            ->take(self::DEFAULT_MAX_RESULT)
+            ->get();
+            $success = true;
+            $message = 'recherhe reussit' ;
+            $response = [
+                'success' => $success,
+                'message' => $message,
+                'personnels' => $data,
+            ];
+            return response()->json($response);
+        }
+        else{
+            $success = false;
+            $message = 'fonction vide' ;
+            $data = [];
+            $response = [
+                'success' => $success,
+                'message' => $message,
+                'personnels' => $data,
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function searchByFonction(Request $request){
+        if(isset($request->fonction)){
+            $conditions = [];
+            $conditions[] = ['Fonction_actuelle','=',$request->fonction];
+            if(isset($request->search)){
+                $conditions[] = ['Matricule','like','%'.$request->fonction.'%'];
+            }
+            $data = Personnel::where($conditions)
+            ->first();
+            $success = true;
+            if(empty($emptyArray)){
+                $message = 'aucun element trouvé' ;
+            }
+            else{
+                $message = 'recherhe reussit' ;
+            }
+        }
+        else{
+            $success = false;
+            $message = 'fonction vide' ;
+            $data = [];
+        }
+        $response = [
+            'success' => $success,
+            'message' => $message,
+            'personnel' => $data,
+        ];
+        return response()->json($response);
+    }
+
 }
+
