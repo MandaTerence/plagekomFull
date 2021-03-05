@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Personnel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PersonnelController extends Controller
 {
-    const DEFAULT_MAX_RESULT = 20;
+    const DEFAULT_MAX_RESULT = 10;
 
     public function index(Request $request){
         $conditions = [];
@@ -21,9 +22,53 @@ class PersonnelController extends Controller
             ->take(self::DEFAULT_MAX_RESULT)
             ->get();
         return $personnels; 
-        /*$personnels = Personnel::all()->toArray();
-        return array_reverse($personnels);*/
     }
+
+    public function compareCA($pa,$pb){
+        if ($pa->CA == $pb->CA) { 
+            return 0;
+        }
+        return ($pa->CA > $pb->CA) ? -1 : 1;
+    }
+
+    public function getClassement(Request $request){
+        $personnels = [];
+        $test = '';
+        if(isset($request->Matricules)){
+            $donnee = $request->Matricules;
+            foreach($donnee as $m){
+                $conditions = [['Matricule','like',$m]];
+                $p = Personnel::getFirstWithCA($conditions);
+                if(isset($p)){
+                    $personnels[] = $p;
+                }
+            }
+            usort( $personnels, array( $this, 'compareCA' ) );
+
+            for($i=0;$i<count($personnels);$i++){
+                $personnels[$i]->place = $i+1;
+            }
+        }
+        
+        if(isset($request->Matricules)){
+            $response = [
+                'success' => true,
+                'message' => 'resultat trouvé'.$test,
+                'personnels' => $personnels,
+            ];
+            return response()->json($response);
+        }
+        else{
+            $response = [
+                'success' => false,
+                'message' => 'aucun resultat trouvé '.$test,
+                'personnels' => null,
+            ];
+            return response()->json($response);
+        }
+        return $personnels;
+    }
+
 
     public function getFirstWhere(Request $request){
         $conditions = [];
@@ -33,8 +78,7 @@ class PersonnelController extends Controller
                 $conditions[] = [$column,'like',$value];
             }
         }
-        $personnel = Personnel::where($conditions)
-            ->first();
+        $personnel = Personnel::getFirstWithCA($conditions);
         if($personnel){
             $response = [
                 'success' => true,
@@ -115,6 +159,5 @@ class PersonnelController extends Controller
         ];
         return response()->json($response);
     }
-
 }
 

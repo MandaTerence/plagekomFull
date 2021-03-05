@@ -26,15 +26,26 @@ class AuthentificationService implements CustomAuthService{
         */
         if(($matricule!=null)&&($matricule!="")&&($password!=null)&&($password!="")){
             $authorised = false;
+            $Utilisateur = Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
+            if(($Utilisateur!=null)&&($Utilisateur->Fonction_actuelle == 12)){
+                $authorised = true;
+            }
+            if($authorised){
+                return $Utilisateur;
+            }
+            /*
             foreach(self::AUTHORISED_ID_PREFIX as $prefix){
                 if(str_starts_with($matricule,$prefix)){
                     $authorised = true;
                     break;
                 }
+                if(){
+
+                }
             }
             if($authorised){
                 return Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
-            }
+            }*/
         }
     }
 }

@@ -26,6 +26,7 @@ Route::group(['prefix' => 'personnels', 'middleware' => 'auth:sanctum'], functio
     Route::get('/', [PersonnelController::class, 'index']);
     Route::get('/getFirstWhere', [PersonnelController::class, 'getFirstWhere']);
     Route::get('/getMatriculeByFonction', [PersonnelController::class, 'getMatriculeByFonction']);
+    Route::get('/getClassement', [PersonnelController::class, 'getClassement']);
     Route::get('/searchByFonction', [PersonnelController::class, 'searchByFonction']);
 });
 
