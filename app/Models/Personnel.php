@@ -51,7 +51,7 @@ class Personnel extends Model
 
     static function getFirstWithCA($conditions){
         $personnel = self::where($conditions)
-        ->select('Matricule', 'Nom', 'Prenom')
+        ->select('Matricule', 'Nom', 'Prenom','Fonction_actuelle')
         ->first();
         if($personnel){
             $date = date("Y-m-d");

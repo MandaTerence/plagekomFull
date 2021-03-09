@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\BookController;
 use App\Http\Controllers\API\UtilisateurController;
 use App\Http\Controllers\API\FonctionController;
+use App\Http\Controllers\API\EquipeController;
 use App\Http\Controllers\API\PersonnelController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +29,9 @@ Route::group(['prefix' => 'personnels', 'middleware' => 'auth:sanctum'], functio
     Route::get('/getMatriculeByFonction', [PersonnelController::class, 'getMatriculeByFonction']);
     Route::get('/getClassement', [PersonnelController::class, 'getClassement']);
     Route::get('/searchByFonction', [PersonnelController::class, 'searchByFonction']);
+});
+
+Route::group(['prefix' => 'equipe', 'middleware' => 'auth:sanctum'], function () {
+    Route::post('/', [EquipeController::class, 'create']);
 });
 

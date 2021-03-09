@@ -131,6 +131,33 @@
                             <thead >
                                 <tr class="bg-primary" style="color:white">
                                     <th scope="col-md-2">matricule</th>
+                                    <th scope="col-md-2">nom et prenom</th>
+                                    <th scope="col-md-2">C.A</th>
+                                    <th scope="col-md-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="coach in coachs" v-bind:key="coach">
+                                    <td scope="col-md-2">{{ coach.Matricule }}</td>
+                                    <td scope="col-md-2">{{ coach.Nom+" "+coach.Prenom }}</td>
+                                    <td scope="col-md-2">{{ coach.CA }}</td>
+                                    <td scope="col-md-1">
+                                        <button class="btn btn-danger" v-on:click="remove(coachs,coach.Matricule)">
+                                        <div class="d-none d-lg-block">
+                                            supprimer
+                                        </diV>
+                                        <div class="d-block d-lg-none">
+                                        X
+                                        </div>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-hover">
+                            <thead >
+                                <tr class="bg-primary" style="color:white">
+                                    <th scope="col-md-2">matricule</th>
                                     <th scope="col-md-2 d-none">nom et prenom</th>
                                     <th scope="col-md-2">C.A</th>
                                     <th scope="col-md-2">place</th>
@@ -139,10 +166,12 @@
                             </thead>
                             <tbody>
                                 <tr v-for="classement in classements" v-bind:key="classement">
-                                    <td scope="col-md-2">{{ classement.Matricule }}</td>
+                                    <td scope="col-md-2" v-if="classement.place == classement.placeOriginal">{{ classement.Matricule }}</td>
+                                    <td scope="col-md-2" style="color:red" v-else-if="classement.place > classement.placeOriginal">{{ classement.Matricule }} ({{  classement.placeOriginal - classement.place }} place)</td>
+                                    <td scope="col-md-2" style="color:green" v-else>{{ classement.Matricule }} (+{{  classement.placeOriginal - classement.place }} place)</td>
                                     <td scope="col-md-2">{{ classement.Nom+classement.Prenom }}</td>
                                     <td scope="col-md-2">{{ classement.CA }}</td>
-                                    <th scope="col-md-2"><input type="number" v-model="classement.place" v-on:change="test"/></th>
+                                    <th scope="col-md-2"><input type="number" v-model="classement.placeTemp" v-on:change="changeClassement(classement.place,classement.placeTemp)"/></th>
                                     <td scope="col-md-1">
                                         <button class="btn btn-danger" v-on:click="remove(classement,classement.Matricule)">
                                         <div class="d-none d-lg-block">
@@ -157,19 +186,18 @@
                                 <tr style="color:white">
                                     <td scope="col-md-2"></td>
                                     <td scope="col-md-2 d-none"></td>
-                                    <td scope="col-md-2"></td>
+                                    <td scope="col-md-2"></td>validateEquipe
                                     <td scope="col-md-1"> <button class="btn btn-primary" v-on:click="showModal = false">Annuler</button></td>
+                                    <td scope="col-md-1"> <button class="btn btn-primary" v-on:click="validateEquipe ">Valider</button></td>
                                 </tr>
                             </tbody>
-                           
+
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 </template>
 
 <script>
@@ -235,6 +263,19 @@ export default {
                 }
             }    
         },
+        validateEquipe(){
+            if(this.coachs.length<this.maxCoach){
+                alert("il manque "+(this.maxCoach-this.coachs.length)+" coach");
+            }
+            else if(this.commerciaux.length<this.maxCommerciaux){
+                alert("il manque "+(this.maxCommerciaux-this.commerciaux.length)+" commerciaux");
+            }
+            else{
+                axios.get('/api/personnels/createEquipe',{params: {Coatch: this.coachs[0].Matricule,Matricules: mat}}).then(response => {
+                    
+                });
+            }
+        },
         searchAutoComplete(){
             this.resultats = [];
             if(this.customId == null){
@@ -278,6 +319,8 @@ export default {
                 if(response.data.personnels!=null){
                     for(let i=0;i<response.data.personnels.length;i++){
                         let perso = response.data.personnels[i];
+                        perso.placeTemp = response.data.personnels[i].place;
+                        perso.placeOriginal = response.data.personnels[i].place;
                         this.classements.push(perso);
                     }
                     this.showModal = true;
@@ -286,6 +329,7 @@ export default {
             });
         },
         addPersonnel(){
+            
             if(this.customId == null){
                 if((this.matricule!=null)&&(this.idFonction!=null)){
                     //this.$axios.get('/sanctum/csrf-cookie').then(response => {
@@ -334,7 +378,6 @@ export default {
                     });
                 });
             }
-            
         },
         addPersonnelToTable(table,personnel){
             let exist = false
@@ -358,13 +401,41 @@ export default {
                 }
             }
         },
-        changeClassement(){
-
+        recalculPlace(){
+            let newClassement = [];
+            for(let i=0;i<this.classements.length;i++){
+                newClassement.push(this.classements[i]);
+                newClassement[i].placeTemp = i+1;
+                newClassement[i].place = i+1;
+            }
+            //this.classements.splice(0,this.classement.length);
+            for(let i=0;i<this.classements.length;i++){
+                this.classements.splice(i,1,newClassement[i]);
+            }
+        },
+        changeClassement(place,placeTemp){
+            if((placeTemp<1)||(placeTemp>this.classements.length)){
+                alert("changement de place impossible");
+                this.classements[place-1].placeTemp = place;
+            }                        
+            else{
+                let elementTemp = this.classements[place-1];
+                this.classements.splice(place-1,1);
+                this.classements.splice(placeTemp-1, 0, elementTemp);
+                this.recalculPlace();
+            }
+            /*
+            let  test = "";
+            for(let i=0;i<this.classements.length;i++){
+                test+= this.classements[i].Matricule+' T: '+this.classements[i].placeTemp+' P: '+this.classements[i].place+' '+this.classements[i].placeOriginal+'\n';
+            }
+            alert(test);
+            */
         },
         test(){
             alert("test ok");
         },
-        
+
     }
 }
 </script>
