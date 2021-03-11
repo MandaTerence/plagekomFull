@@ -20,10 +20,6 @@ class AuthentificationService implements CustomAuthService{
     }
 
     public function checkUtilisateur(string $matricule,string $password){
-        /*
-        if(($matricule!=null)&&($matricule!="")&&($password!=null)&&($password!=""))
-            return Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
-        */
         if(($matricule!=null)&&($matricule!="")&&($password!=null)&&($password!="")){
             $authorised = false;
             $Utilisateur = Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
@@ -33,19 +29,6 @@ class AuthentificationService implements CustomAuthService{
             if($authorised){
                 return $Utilisateur;
             }
-            /*
-            foreach(self::AUTHORISED_ID_PREFIX as $prefix){
-                if(str_starts_with($matricule,$prefix)){
-                    $authorised = true;
-                    break;
-                }
-                if(){
-
-                }
-            }
-            if($authorised){
-                return Utilisateur::where('Matricule', $matricule)->where('Mode_de_pass_login',$password)->first();
-            }*/
         }
     }
 }

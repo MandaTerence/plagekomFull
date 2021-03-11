@@ -24,14 +24,10 @@ class Accompagnement extends Model
         'Ordre',
     ];
 
-    protected $guarded = [];
-
-    public function createEquipe($Commercial,$Coach){
-        
-    }
-
-    public function insertIntoEquipeCoatch(){
-        
+    public function getFromMissionAndCoach($mission,$coach){
+        if((isset($mission))&&(isset($coach))){
+            
+        }
     }
     
 }

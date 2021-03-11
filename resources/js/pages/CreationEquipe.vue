@@ -1,6 +1,12 @@
 <template>
     <div class="form-row">
         <div class="form-group col-md-4">
+            <label for="inputMission">Mission</label>
+            <select class="form-control" id="inputMission" v-model="idMission" >
+                <option v-bind:key="mission.Id_de_la_mission" v-bind:value="mission.Id_de_la_mission" v-for="mission in missions">{{ mission.Id_de_la_mission }}</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
             <label for="inputFonction">Fonction</label>
             <select class="form-control" id="inputFonction" v-model="idFonction" v-on:change="changeCustomId">
                 <option v-bind:key="fonction.designation" v-bind:value="fonction.id" v-for="fonction in fonctions">{{ fonction.designation }}</option>
@@ -183,16 +189,15 @@
                                         </button>
                                     </td>
                                 </tr>
-                                <tr style="color:white">
-                                    <td scope="col-md-2"></td>
-                                    <td scope="col-md-2 d-none"></td>
-                                    <td scope="col-md-2"></td>validateEquipe
-                                    <td scope="col-md-1"> <button class="btn btn-primary" v-on:click="showModal = false">Annuler</button></td>
-                                    <td scope="col-md-1"> <button class="btn btn-primary" v-on:click="validateEquipe ">Valider</button></td>
-                                </tr>
                             </tbody>
 
                         </table>
+                    </div>
+                    <div class="modal-footer">
+                        <slot name="footer">
+                            <button class="btn btn-primary" v-on:click="validateEquipe ">Valider</button>
+                            <button class="btn btn-primary" v-on:click="showModal = false">retour</button>
+                        </slot>
                     </div>
                 </div>
             </div>
@@ -207,12 +212,13 @@ export default {
         return {
             matricule: '',
             fonctions: [],
-            personnels: [],
+            missions: [],
             commerciaux: [],
             coachs: [],
             resultats: [],
             classements: [],
             idFonction: null,
+            idMission: null,
             isSearchingAutoComplete: false,
             maxCoach:1,
             maxCommerciaux:8,
@@ -221,21 +227,43 @@ export default {
         }
     },
     created() {
-        this.$axios.get('/sanctum/csrf-cookie').then(response => {
-            this.$axios.get('/api/fonctions') 
-            .then(response => {
-                this.fonctions = response.data;
-                //alert(JSON.stringify(this.fonctions));
-                this.idFonction = this.fonctions[0].id;
-                this.customId = this.fonctions[0].customId;
-                //this.searchPersonnels();
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-        })
+        this.loadFonctions();
+        this.loadMissions();
     },
     methods: {
+        loadFonctions(){
+            //this.$axios.get('/sanctum/csrf-cookie').then(response => {
+                this.$axios.get('/api/fonctions') 
+                .then(response => {
+                    this.fonctions = response.data;
+                    //alert(JSON.stringify(this.fonctions));
+                    this.idFonction = this.fonctions[0].id;
+                    this.customId = this.fonctions[0].customId;
+                    //this.searchPersonnels();
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+            //})
+        },
+        loadMissions(){
+            //this.$axios.get('/sanctum/csrf-cookie').then(response => {
+                this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
+                .then(response => {
+                    if(response.data.success){
+                        //alert(response.message);
+                        this.missions = response.data.data;
+                        this.idMission = this.missions[0].Id_de_la_mission;
+                    }
+                    else{
+                        console.log(response.data.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+            //})
+        },
         fonctionOnChange(){
             this.resultats = [];
             this.matricule = '';
@@ -271,8 +299,14 @@ export default {
                 alert("il manque "+(this.maxCommerciaux-this.commerciaux.length)+" commerciaux");
             }
             else{
-                axios.get('/api/personnels/createEquipe',{params: {Coatch: this.coachs[0].Matricule,Matricules: mat}}).then(response => {
-                    
+                //alert(JSON.stringify(this.getMatriculeAndPlaceFromArray(this.classements)));
+                axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),idMission:this.idMission}).then(response => {
+                    if(response.success){
+                        this.showModal = false;
+                    }
+                    else if(!response.success){
+                        alert('insertion echoué');
+                    }
                 });
             }
         },
@@ -304,6 +338,14 @@ export default {
                 this.isSearchingAutoComplete = false;
             }
         },
+        getMatriculeAndPlaceFromArray(personnels){
+            let matricules = [];
+            for(let i=0;i<personnels.length;i++){
+                let element = {'Matricule' : personnels[i]['Matricule'], 'Place' : personnels[i]['place'] };
+                matricules.push(element);
+            }
+            return matricules;
+        },
         getMatriculeFromArray(personnels){
             let matricules = [];
             for(let i=0;i<personnels.length;i++){
@@ -328,6 +370,20 @@ export default {
                 
             });
         },
+        addEquipeFromCoach(coach){
+            this.addPersonnelToTable(this.coachs,coach);
+            axios.get('/api/personnels/searchPersonnelFromCoach',{params: {coach: coach.Matricule,idMission: this.idMission}}).then(response => {
+                //this.addPersonnelToTable(this.coachs,response.data.personnel);
+                for(let i=0;i<response.data.data.length;i++){
+                    if(this.commerciaux.length>=this.maxCommerciaux){
+                        
+                    }
+                    else if(response.data.data[i].Matricule!=coach.Matricule){
+                        this.addPersonnelToTable(this.commerciaux,response.data.data[i]);
+                    }
+                }
+            });
+        },
         addPersonnel(){
             
             if(this.customId == null){
@@ -339,7 +395,7 @@ export default {
                                     if(this.coachs.length > (this.maxCoach-1)){
                                         alert("il existe deja un coach");
                                     }else{
-                                        this.addPersonnelToTable(this.coachs,response.data.personnel);
+                                        this.addEquipeFromCoach(response.data.personnel);
                                     }
                                 }else{
                                     if(this.commerciaux.length > (this.maxCommerciaux-1)){

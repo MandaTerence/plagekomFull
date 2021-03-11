@@ -26,9 +26,7 @@ class FonctionController extends Controller
             ->take(self::DEFAULT_MAX_RESULT)
             ->get();
 
-        foreach (self::CUSTOM_FONCTION as $customFonction) {
-            $res[] = (object)$customFonction;
-        }
+        
 
         foreach($fonctions as $f){
             foreach(self::AUTHORISED_ID as $id){
@@ -37,6 +35,11 @@ class FonctionController extends Controller
                 }
             }
         }
+
+        foreach (self::CUSTOM_FONCTION as $customFonction) {
+            $res[] = (object)$customFonction;
+        }
+
         return $res; 
     }
 

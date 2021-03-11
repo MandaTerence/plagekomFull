@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Utilisateur;
-use Illuminate\Support\Str;
+use App\Models\DetailMission;
+use App\Models\Classement;
+use App\Models\Mission;
 
-class FactureService {
+class AccompagnementService {
 
-    const MIN_COMMERCIAUX = 7;
-    const MAX_COMMERCIAUX = 8;
 
     public function __construct()
     {
@@ -25,12 +24,20 @@ class FactureService {
         $mission = Mission::getFirst([['Id_de_la_mission','like',$idMission]]);
         $Date_depart = $mission->Date_depart;
         $Date_de_fin = $mission->Date_de_fin;
-        $period = new DatePeriod(
-            new DateTime($Date_depart),
-            new DateInterval('P1D'),
-            new DateTime($Date_de_fin)
-       );
+        $period = self::date_range($Date_depart, $Date_de_fin);
        return $period;
+    }
+
+    public static function date_range($first, $last, $step = '+1 day', $output_format = 'd/m/Y' ) {
+        $dates = array();
+        $current = strtotime($first);
+        $last = strtotime($last);
+        while( $current <= $last ) {
+    
+            $dates[] = date($output_format, $current);
+            $current = strtotime($step, $current);
+        }
+        return $dates;
     }
 
 }

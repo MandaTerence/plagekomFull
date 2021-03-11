@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Personnel;
+use App\Models\DetailMission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -95,6 +96,28 @@ class PersonnelController extends Controller
             ];
             return response()->json($response);
         }
+    }
+
+    public function getPersonnelFromCoach(Request $request){
+        if((isset($request->coach))&&(isset($request->idMission))){
+            $coach = $request->coach;
+            $idMission = $request->idMission;
+            $personnels = DetailMission::getPersonnelFromCoach($coach,$idMission);
+            if(count($personnels)>0){
+                $response = [
+                    'success' => true,
+                    'message' => count($personnels).'result found',
+                    'data' => $personnels,
+                ];
+                return response()->json($response);
+            }
+        }
+        $response = [
+            'success' => false,
+            'message' => 'no result found',
+            'data' => [],
+        ];
+        return response()->json($response);
     }
 
     public function getMatriculeByFonction(Request $request){
