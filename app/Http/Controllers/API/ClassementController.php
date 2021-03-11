@@ -18,7 +18,7 @@ class ClassementController extends Controller
         $mess = AccompagnementService::generatePlanning($idMission,$coach);
         $response = [
             'success' => $success,
-            'message' => json_encode($mess),
+            'message' => $mess,
         ];
         return response()->json($response);
     }

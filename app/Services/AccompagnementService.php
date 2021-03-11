@@ -24,8 +24,12 @@ class AccompagnementService {
         $mission = Mission::getFirst([['Id_de_la_mission','like',$idMission]]);
         $Date_depart = $mission->Date_depart;
         $Date_de_fin = $mission->Date_de_fin;
-        $period = self::date_range($Date_depart, $Date_de_fin);
-       return $period;
+        $periods = self::date_range($Date_depart, $Date_de_fin);
+        
+        foreach($periods as $period){
+
+        }
+       return true;
     }
 
     public static function date_range($first, $last, $step = '+1 day', $output_format = 'd/m/Y' ) {
