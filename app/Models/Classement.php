@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Classement extends Model
 {
@@ -46,10 +47,13 @@ class Classement extends Model
     public static function getFromMatricules($idMission,$personnels){
         $searchquery = '(';
         foreach($personnels as $personnel){
-            $searchquery .=''.$personnel.',';
+            $searchquery .="'".$personnel."',";
         }
-        substr_replace($searchquery ,")",-1);
-        return Classement::where([['Id','in',$searchquery],['Id_de_la_mission','like',$idMission]])
+        //substr($searchquery, 0, -1);
+        $searchquery = substr_replace($searchquery, ")", -1);
+        return Classement::whereRaw("Commercial in ".$searchquery)
+        ->whereRaw("Id_de_la_mission like '".$idMission."'")
         ->get();
+        
     }
 }

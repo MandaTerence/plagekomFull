@@ -301,10 +301,10 @@ export default {
             else{
                 //alert(JSON.stringify(this.getMatriculeAndPlaceFromArray(this.classements)));
                 axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),idMission:this.idMission}).then(response => {
-                    if(response.success){
+                    if(response.data.success){
                         this.showModal = false;
                     }
-                    else if(!response.success){
+                    else if(!response.data.success){
                         alert('insertion echoué');
                     }
                 });
