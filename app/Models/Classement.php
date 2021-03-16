@@ -44,7 +44,7 @@ class Classement extends Model
             return false;
         }
     }
-    public static function getFromMatricules($idMission,$personnels){
+    public static function getFromMatricules($idMission,$personnels=null){
         $searchquery = '(';
         foreach($personnels as $personnel){
             $searchquery .="'".$personnel."',";
@@ -53,7 +53,17 @@ class Classement extends Model
         $searchquery = substr_replace($searchquery, ")", -1);
         return Classement::whereRaw("Commercial in ".$searchquery)
         ->whereRaw("Id_de_la_mission like '".$idMission."'")
-        ->get();
-        
+        ->get(); 
+    }
+    public static function getFromMissionAndCoach($idMission,$coach){
+        $searchquery = '(';
+        foreach($personnels as $personnel){
+            $searchquery .="'".$personnel."',";
+        }
+        //substr($searchquery, 0, -1);
+        $searchquery = substr_replace($searchquery, ")", -1);
+        return Classement::whereRaw("Commercial in ".$searchquery)
+        ->whereRaw("Id_de_la_mission like '".$idMission."'")
+        ->get(); 
     }
 }

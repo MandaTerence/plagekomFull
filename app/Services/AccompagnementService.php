@@ -60,17 +60,25 @@ class AccompagnementService {
         return "ok test";
     }
 
-    public static function generatePlanning($idMission,$coach){
-        $personnels = DetailMission::getPersonnelFromCoach($coach,$idMission);
+    public static function generatePlanning($idMission,$coach,$personnels=null){
+        if($personnels==null){
+            $personnels = DetailMission::getPersonnelFromCoach($coach,$idMission);
+        }
         $matricules = [];
         foreach($personnels as $p){
-            $matricules[] = $p->Matricule;
+            if(isset($p['Matricule'])){
+                $matricules[] = $p['Matricule'];
+            }
+            else{
+                $matricules[] = $p->Matricule;
+            }
         }
         $classement = Classement::getFromMatricules($idMission,$matricules);
         $mission = Mission::getFirst([['Id_de_la_mission','like',$idMission]]);
         $Date_depart = $mission->Date_depart;
         $Date_de_fin = $mission->Date_de_fin;
         $periods = self::date_range($Date_depart, $Date_de_fin);
+        $accArray = [];
         foreach($periods as $period){
             $p = str_replace('/', '-', $period);
             $jour = date('w', strtotime($p));
@@ -78,18 +86,20 @@ class AccompagnementService {
             foreach(self::JOUR_ACCOMPAGNEMENT as $plan){
                 if($jour == $plan['Date']){
                     $com = $classement[$plan['place']-1];
-                    $acc = new Accompagnement();
-                    $acc->Id_de_la_mission = $idMission;
-                    $acc->Commercial = $com->Commercial;
-                    $acc->Coach = $coach;
-                    $acc->Date = $dateInserer;
-                    $acc->Heure_debut = $plan['Heure_debut'];
-                    $acc->Heure_fin = $plan['Heure_fin'];
-                    $acc->Ordre = $plan['Ordre'];
-                    $acc->save();
+                    $acc = [
+                        'Id_de_la_mission'=>$idMission,
+                        'Commercial'=>$com->Commercial,
+                        'Coach'=>$coach,
+                        'Date'=>$dateInserer,
+                        'Heure_debut'=>$plan['Heure_debut'],
+                        'Heure_fin'=>$plan['Heure_fin'],
+                        'Ordre'=>$plan['Ordre']
+                    ];
+                    $accArray[] = $acc;
                 }
             }
         }
+        Accompagnement::insert($accArray);
         return true;
     }
 
@@ -105,4 +115,39 @@ class AccompagnementService {
         return $dates;
     }
 
+    public static function toFormatParJour($accs){
+        $jours = [];
+        for($i=0;$i+3<count($accs);$i+=4){
+            $jour=[
+                'Coach'=>$accs[$i]->Coach,
+                'jour'=>$accs[$i]->Date,
+                'matin'=>[
+                    [
+                        'Commercial'=>$accs[$i]->Commercial,
+                        'Heure_debut'=>$accs[$i]->Heure_debut,
+                        'Heure_fin'=>$accs[$i]->Heure_fin
+                    ],
+                    [
+                        'Commercial'=>$accs[$i+1]->Commercial,
+                        'Heure_debut'=>$accs[$i+1]->Heure_debut,
+                        'Heure_fin'=>$accs[$i+1]->Heure_fin
+                    ]    
+                ],
+                'apresMidi'=>[
+                    [
+                        'Commercial'=>$accs[$i+2]->Commercial,
+                        'Heure_debut'=>$accs[$i+2]->Heure_debut,
+                        'Heure_fin'=>$accs[$i+2]->Heure_fin
+                    ],
+                    [
+                        'Commercial'=>$accs[$i+3]->Commercial,
+                        'Heure_debut'=>$accs[$i+3]->Heure_debut,
+                        'Heure_fin'=>$accs[$i+3]->Heure_fin
+                    ]
+                ]
+            ];
+            $jours[] =$jour;
+        }
+        return $jours; 
+    }
 }

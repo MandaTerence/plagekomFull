@@ -6,5 +6,6 @@ import router from './router'
 
 const app = createApp(App)
 app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$router = router;
 app.use(router)
 app.mount('#app')

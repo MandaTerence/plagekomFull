@@ -6,10 +6,12 @@ import Home from '../pages/Home';
 import About from '../pages/About';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
+import Planning from '../pages/Planning';
 
 import Books from '../components/Books';
 import AddBook from '../components/AddBook';
 import EditBook from '../components/EditBook';
+
 
 export const routes = [
     {
@@ -49,8 +51,13 @@ export const routes = [
     },
     {
         name: 'editbook',
-        path: '/books/edit/:id',
+        path: '/books/edit/:idMission',
         component: EditBook
+    },
+    {
+        name: 'planning',
+        path: '/planning',
+        component: Planning
     },
 ];
 

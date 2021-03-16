@@ -45,4 +45,5 @@ Route::group(['prefix' => 'equipe', 'middleware' => 'auth:sanctum'], function ()
 
 Route::group(['prefix' => 'classements', 'middleware' => 'auth:sanctum'], function () {
     Route::post('/', [ClassementController::class, 'create']);
+    Route::get('/planning', [ClassementController::class, 'getPlanning']);
 });

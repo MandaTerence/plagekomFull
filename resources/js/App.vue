@@ -48,7 +48,7 @@
                 <div class="dropdown-container">
                     <router-link to="/dashboard" class="nav-item nav-link sub-category" v-bind:style="{ display: dropdownListDisplay[0] }"><div v-on:click="flipSideBar"> -Controle</div></router-link>
                     <router-link to="/books" class="nav-item nav-link sub-category" v-bind:style="{ display: dropdownListDisplay[0] }"><div v-on:click="flipSideBar"> -Etat Controle du mois</div></router-link>
-                    <router-link to="/" class="nav-item nav-link sub-category" v-bind:style="{ display: dropdownListDisplay[0] }"><div v-on:click="flipSideBar"> -Calendrier de controle</div></router-link>
+                    <router-link to="/planning" class="nav-item nav-link sub-category" v-bind:style="{ display: dropdownListDisplay[0] }"><div v-on:click="flipSideBar"> -Calendrier du mois</div></router-link>
                     <router-link to="/" class="nav-item nav-link sub-category" v-bind:style="{ display: dropdownListDisplay[0] }"><div v-on:click="flipSideBar"> -Fiche commerciale</div></router-link>
                 </div>
                 <button class="dropdown-btn" v-on:click="dropdown(1)">Planning et Accompagnement</button>

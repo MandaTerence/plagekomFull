@@ -14,6 +14,8 @@ class Accompagnement extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    const DEFAULT_MAX_RESULT = 10;
+
     protected $fillable = [
         'Id_de_la_mission',
         'Commercial',
@@ -24,10 +26,44 @@ class Accompagnement extends Model
         'Ordre',
     ];
 
-    public function getFromMissionAndCoach($mission,$coach){
+    public static function getFromMissionAndCoach($mission,$coach='all',$nbrRes=self::DEFAULT_MAX_RESULT){
         if((isset($mission))&&(isset($coach))){
-            
+            if($coach=='all'){
+                return self::where('Id_de_la_mission','like',$mission)
+                ->get()
+                ;
+            }
+            else{
+                return self::where('Id_de_la_mission','like',$mission)
+                ->where('Coach','like',$coach)
+                ->get()
+                ;
+            }
+        }
+        else{
+            return false;
         }
     }
     
+    public static function getCoachsFromMission($mission){
+        if(isset($mission)){
+            return self::select('Coach')
+            ->distinct()
+            ->where('Id_de_la_mission','like',$mission)
+            ->take(2)
+            ->get()
+            ;
+        }
+    }
+
+    public static function getCoachsFromMissionSQL($mission){
+        if(isset($mission)){
+            return self::select('Coach')
+            ->distinct()
+            ->where('Id_de_la_mission','like',$mission)
+            ->take(2)
+            ->toSql()
+            ;
+        }
+    }
 }

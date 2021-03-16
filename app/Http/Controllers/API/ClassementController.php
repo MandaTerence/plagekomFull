@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Classement;
 use App\Models\Accompagnement;
+use App\Models\DetailMission;
 use Illuminate\Http\Request;
 use App\Services\AccompagnementService;
 
@@ -15,18 +16,47 @@ class ClassementController extends Controller
         $commerciaux = $request->input('matriculeCommerciaux');
         $idMission = $request->input('idMission');
         $success = Classement::saveFromCommerciaux($idMission,$commerciaux); 
-        $mess = AccompagnementService::generatePlanning($idMission,$coach);
+        if($success){
+            $mess = AccompagnementService::generatePlanning($idMission,$coach,$commerciaux);
+        }
         $response = [
             'success' => $success,
-            'message' => $mess,
         ];
         return response()->json($response);
     }
 
     public function getPlanning(Request $request){
-        if((isset($request->mission))&&(isset($request->coach))){
-            $idMission = $request->mission;
-            $coach = $request->coach;
+        if((isset($request->idMission))&&(isset($request->coach))){
+            $idMission = $request->idMission;
+            if($request->coach!='all'){
+                $coach = $request->coach;
+                $acc = Accompagnement::getFromMissionAndCoach($idMission,$coach);
+                $accParJour = AccompagnementService::toFormatParJour($acc);
+                $response = [
+                    'success' => true,
+                    'data' => [$accParJour],
+                ];
+                return $response;
+            }
+            else{
+                $coachs = Accompagnement::getCoachsFromMission($idMission);
+                $accParJour = [];
+                if(isset($coachs)){
+                    foreach($coachs as $coach){
+                        $acc = Accompagnement::getFromMissionAndCoach($idMission,$coach->Coach);
+                        $accParJour[] = AccompagnementService::toFormatParJour($acc);
+                    }
+                }
+                $response = [
+                    'success' => true,
+                    'data' => $accParJour,
+                    'coach'=> $coachs,
+                ];
+                return $response;
+            }
+        }
+        else{
+
         }
     }
 

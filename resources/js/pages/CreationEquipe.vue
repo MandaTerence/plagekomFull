@@ -195,7 +195,7 @@
                     </div>
                     <div class="modal-footer">
                         <slot name="footer">
-                            <button class="btn btn-primary" v-on:click="validateEquipe ">Valider</button>
+                            <button class="btn btn-primary" v-on:click="validateEquipe">Valider</button>
                             <button class="btn btn-primary" v-on:click="showModal = false">retour</button>
                         </slot>
                     </div>
@@ -303,6 +303,8 @@ export default {
                 axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),idMission:this.idMission}).then(response => {
                     if(response.data.success){
                         this.showModal = false;
+                        this.testRouter(this.idMission,this.coachs[0].Matricule);
+                        //this.$router.push({ name: 'planning', params: { idMission: '123' } });
                     }
                     else if(!response.data.success){
                         alert('insertion echoué');
@@ -385,7 +387,6 @@ export default {
             });
         },
         addPersonnel(){
-            
             if(this.customId == null){
                 if((this.matricule!=null)&&(this.idFonction!=null)){
                     //this.$axios.get('/sanctum/csrf-cookie').then(response => {
@@ -488,10 +489,12 @@ export default {
             alert(test);
             */
         },
+        testRouter(idMission,coach){
+            this.$router.push({ name: 'planning', query: { idMission: idMission ,coach: coach} });
+        },
         test(){
             alert("test ok");
         },
-
     }
 }
 </script>
