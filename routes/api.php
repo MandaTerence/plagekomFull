@@ -36,7 +36,7 @@ Route::group(['prefix' => 'personnels', 'middleware' => 'auth:sanctum'], functio
     Route::get('/getMatriculeByFonction', [PersonnelController::class, 'getMatriculeByFonction']);
     Route::get('/getClassement', [PersonnelController::class, 'getClassement']);
     Route::get('/searchByFonction', [PersonnelController::class, 'searchByFonction']);
-    Route::get('/searchPersonnelFromCoach', [PersonnelController::class, 'getPersonnelFromCoach']);
+    Route::get('/getPersonnelFromCoach', [PersonnelController::class, 'getPersonnelFromCoach']);
 });
 
 Route::group(['prefix' => 'equipe', 'middleware' => 'auth:sanctum'], function () {

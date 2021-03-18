@@ -13,7 +13,8 @@ class PersonnelService {
 
     }
 
-    public function getAllWithCA(){
+    public function getAllWithCA()
+    {
 
     }
 

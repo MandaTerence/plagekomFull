@@ -7,6 +7,8 @@ import About from '../pages/About';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Planning from '../pages/Planning';
+import ControleTelephonique from '../pages/ControleTelephonique';
+
 
 import Books from '../components/Books';
 import AddBook from '../components/AddBook';
@@ -58,6 +60,11 @@ export const routes = [
         name: 'planning',
         path: '/planning',
         component: Planning
+    },
+    {
+        name: 'controleTelephonique',
+        path: '/controleTelephonique',
+        component: ControleTelephonique
     },
 ];
 

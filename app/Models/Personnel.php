@@ -12,6 +12,7 @@ use App\Models\Facture;
 class Personnel extends Model
 {
     use HasFactory,Notifiable;
+    const DEFAULT_MAX_RESULT = 10;
 
     private static $DAY_INTERVAL = 190;
     protected $table = 'personnel';
@@ -96,6 +97,19 @@ class Personnel extends Model
                 'personnel' => null,
             ];
             return response()->json($response);
+        }
+    }
+    
+    public static function getMatricules($conditions = [],$nbrOfResult = self::DEFAULT_MAX_RESULT){
+        if($nbrOfResult == 'all'){
+            return self::select('Matricule')
+            ->where($conditions)
+            ->get();
+        }else{
+            return self::select('Matricule')
+            ->where($conditions)
+            ->take($nbrOfResult)
+            ->get();
         }
     }
 }

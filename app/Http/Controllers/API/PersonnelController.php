@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Personnel;
 use App\Models\DetailMission;
 use Illuminate\Http\Request;
+use App\Helpers\ControllerHelper;
 use Illuminate\Support\Facades\DB;
 
 class PersonnelController extends Controller
@@ -13,13 +14,7 @@ class PersonnelController extends Controller
     const DEFAULT_MAX_RESULT = 10;
 
     public function index(Request $request){
-        $conditions = [];
-        if(isset($request->criteres)){
-            foreach($request->criteres as $column => $value){
-                $conditions[] = [$column,'like',$value];
-            }
-        }
-        $personnels = Personnel::where($conditions)
+        $personnels = Personnel::where(ControllerHelper::getConditions($request))
             ->take(self::DEFAULT_MAX_RESULT)
             ->get();
         return $personnels; 
@@ -70,7 +65,6 @@ class PersonnelController extends Controller
         return $personnels;
     }
 
-
     public function getFirstWhere(Request $request){
         $conditions = [];
         if(isset($request->criteres)){
@@ -109,7 +103,7 @@ class PersonnelController extends Controller
                     'message' => count($personnels).'result found',
                     'data' => $personnels,
                 ];
-                return response()->json($response);
+                return $response;
             }
         }
         $response = [
@@ -117,7 +111,7 @@ class PersonnelController extends Controller
             'message' => 'no result found',
             'data' => [],
         ];
-        return response()->json($response);
+        return $response;
     }
 
     public function getMatriculeByFonction(Request $request){
@@ -127,29 +121,20 @@ class PersonnelController extends Controller
             if(isset($request->search)){
                 $conditions[] = ['Matricule','like','%'.$request->search.'%'];
             }
-            $data = Personnel::select('Matricule')
-            ->where($conditions)
-            ->take(self::DEFAULT_MAX_RESULT)
-            ->get();
-            $success = true;
-            $message = 'recherhe reussit' ;
+            $personnels = Personnel::getMatricules($conditions);
             $response = [
-                'success' => $success,
-                'message' => $message,
-                'personnels' => $data,
+                'success' => true,
+                'message' => count($personnels).' results founds',
+                'personnels' => $personnels,
             ];
-            return response()->json($response);
+            return $response;
         }
         else{
-            $success = false;
-            $message = 'fonction vide' ;
-            $data = [];
             $response = [
-                'success' => $success,
-                'message' => $message,
-                'personnels' => $data,
+                'success' => false,
+                'message' => 'fonction vide',
             ];
-            return response()->json($response);
+            return $response;
         }
     }
 
@@ -181,6 +166,10 @@ class PersonnelController extends Controller
             'personnel' => $data,
         ];
         return response()->json($response);
+    
+    
+    
     }
+
 }
 

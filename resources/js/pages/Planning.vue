@@ -10,51 +10,59 @@
         </div>
     </div>
     <div>
-        <div v-for="tabPlannings in plannings" v-bind:key="tabPlannings">
-            <h1 v-if="tabPlannings.length>0">{{ tabPlannings[0].Coach  }}</h1>
-            <div style="margin-top:50px" v-for="planning in tabPlannings" v-bind:key="planning">
-                <div class="row">
-                    <div class="col-3">
-                        <h3>{{ planning['jour'] }}</h3>
-                    </div>
+        <div v-for="planningCoach in plannings" v-bind:key="planningCoach">
+            <h1 v-if="planningCoach.accompagnement.length>0" v-on:click="displayPlanning(planningCoach.coach )">{{ planningCoach.coach.Coach  }}</h1>
+            <div v-if="planningCoach.visibility==true">
+                <div>
+                    <h1>Equipe</h1>
+                    <ul>
+                        <li v-for="commercial in planningCoach.Commerciaux" v-bind:key="commercial">{{ commercial.Commercial }}</li>
+                    </ul>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3>Matin</h3>
-                        <table class="table" >
-                            <tr class="bg-primary" style="color:white">
-                                <td> HEURE </td>
-                                <td> MATRICULE </td>                    
-                            </tr>
-                            <tr>
-                                <td> {{ formatHeure(planning.matin[0].Heure_debut) }} à {{ formatHeure(planning.matin[0].Heure_fin) }}  </td>
-                                <td> {{ planning.matin[0].Commercial }} </td>                    
-                            </tr>
-                            <tr>
-                                <td> {{ formatHeure(planning.matin[1].Heure_debut) }} à {{ formatHeure(planning.matin[1].Heure_fin) }}  </td>
-                                <td> {{ planning.matin[1].Commercial }} </td>                    
-                            </tr>
-                        </table>
+                <div style="margin-top:50px" v-for="planning in planningCoach.accompagnement" v-bind:key="planning">
+                    <div class="row">
+                        <div class="col-3">
+                            <h3>{{ planning['jour'] }}</h3>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h3>Apres Midi</h3>
-                        <table class="table">
-                            <tr class="bg-primary" style="color:white">
-                                <td> HEURE </td>
-                                <td> MATRICULE </td>                    
-                            </tr>
-                            <tr>
-                                <td> {{ formatHeure(planning.apresMidi[0].Heure_debut) }} à {{ formatHeure(planning.apresMidi[0].Heure_fin) }}  </td>
-                                <td> {{ planning.apresMidi[0].Commercial }} </td>                    
-                            </tr>
-                            <tr>
-                                <td> {{ formatHeure(planning.apresMidi[1].Heure_debut) }} à {{ formatHeure(planning.apresMidi[1].Heure_fin) }}  </td>
-                                <td> {{ planning.apresMidi[1].Commercial }} </td>                    
-                            </tr>
-                        </table>
-                    </div>
-                </div>  
-                <hr style="background-color: #3490dc;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Matin</h3>
+                            <table class="table" >
+                                <tr class="bg-primary" style="color:white">
+                                    <td> HEURE </td>
+                                    <td> MATRICULE </td>                    
+                                </tr>
+                                <tr>
+                                    <td> {{ formatHeure(planning.matin[0].Heure_debut) }} à {{ formatHeure(planning.matin[0].Heure_fin) }}  </td>
+                                    <td> {{ planning.matin[0].Commercial }} </td>                    
+                                </tr>
+                                <tr>
+                                    <td> {{ formatHeure(planning.matin[1].Heure_debut) }} à {{ formatHeure(planning.matin[1].Heure_fin) }}  </td>
+                                    <td> {{ planning.matin[1].Commercial }} </td>                    
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Apres Midi</h3>
+                            <table class="table">
+                                <tr class="bg-primary" style="color:white">
+                                    <td> HEURE </td>
+                                    <td> MATRICULE </td>                    
+                                </tr>
+                                <tr>
+                                    <td> {{ formatHeure(planning.apresMidi[0].Heure_debut) }} à {{ formatHeure(planning.apresMidi[0].Heure_fin) }}  </td>
+                                    <td> {{ planning.apresMidi[0].Commercial }} </td>                    
+                                </tr>
+                                <tr>
+                                    <td> {{ formatHeure(planning.apresMidi[1].Heure_debut) }} à {{ formatHeure(planning.apresMidi[1].Heure_fin) }}  </td>
+                                    <td> {{ planning.apresMidi[1].Commercial }} </td>                    
+                                </tr>
+                            </table>
+                        </div>
+                    </div>  
+                    <hr style="background-color: #3490dc;">
+                </div>
             </div>
         </div>
     </div>
@@ -69,43 +77,53 @@ export default {
             idMission: '',
             plannings: [],
             coach: 'all',
+            showPlanning: true,
             isSearchingAutoComplete: false
         }
     },
     created() {
-        let urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('idMission')){
-            this.idMission = urlParams.get('idMission');
-        }
-        if(urlParams.get('coach'))
-            this.coach = urlParams.get('coach');
+        this.loadURLdata();
         this.loadMissions();
         this.loadPlannig();
     },
     methods: {
+        loadURLdata(){
+            let urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('idMission')){
+                this.idMission = urlParams.get('idMission');
+            }
+            if(urlParams.get('coach'))
+            this.coach = urlParams.get('coach');
+        },
         loadMissions(){
-            //this.$axios.get('/sanctum/csrf-cookie').then(response => {
-                this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
-                .then(response => {
-                    if(response.data.success){
-                        //alert(response.message);
-                        this.missions = response.data.data;
-                        //this.idMission = this.missions[0].Id_de_la_mission;
-                    }
-                    else{
-                        console.log(response.data.message);
-                    }
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
-            //})
+            this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
+            .then(response => {
+                if(response.data.success){
+                    this.missions = response.data.data;     
+                }
+                else{
+                    console.log(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+        },
+        displayPlanning(coach){
+            for(let i=0;i<this.plannings.length;i++){
+                if(this.plannings[i].coach==coach){
+                    this.plannings[i].visibility? this.plannings[i].visibility=false:this.plannings[i].visibility=true;
+                }
+            }
         },
         loadPlannig(){
             if((this.idMission!=null)&&(this.idMission!='')&&(this.coach!=null)&&(this.coach!='')){
                 this.$axios.get('/sanctum/csrf-cookie').then(response => {
                     axios.get('/api/classements/planning',{params: {idMission : this.idMission,coach : this.coach}}).then(response => {
-                        this.plannings = response.data.data;
+                        this.plannings = response.data.plannings;
+                        for(let i=0;i<this.plannings.length;i++){
+                            this.plannings[i].visibility = true;
+                        }
                     });  
                 });
             }
@@ -123,7 +141,6 @@ export default {
             return ''+(parseInt(arr[0])<10? '0'+parseInt(arr[0]): parseInt(arr[0]))+'h '+(parseInt(arr[1])<10? '0'+parseInt(arr[1]): parseInt(arr[1]));
         },
         searchAutoComplete(){
-            //this.missions = [];
             this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours',Id_de_la_mission: '%'+this.idMission+'%'}}}).then(response => {
                 this.isSearchingAutoComplete = false;
                 for(let i=0;i<this.missions.length;i++){

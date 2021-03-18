@@ -41,7 +41,7 @@ class Classement extends Model
             }
             return true;
         }catch (\Exception $e) {
-            return false;
+            return $e;
         }
     }
     public static function getFromMatricules($idMission,$personnels=null){

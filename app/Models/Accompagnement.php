@@ -26,6 +26,27 @@ class Accompagnement extends Model
         'Ordre',
     ];
 
+    public static function getFromMission($mission){
+        if(isset($mission)){
+            return self::where('Id_de_la_mission','like',$mission)
+            ->get();
+        }
+    }
+
+    public static function getCommerciaux($mission,$coach){
+        if((isset($mission))&&(isset($coach))){
+            return self::select('Commercial')
+            ->where('Id_de_la_mission',$mission)
+            ->where('Coach',$coach)
+            ->groupBy('Commercial','Coach')
+            ->get()
+            ;
+        }
+        else{
+            return false;
+        }
+    }
+
     public static function getFromMissionAndCoach($mission,$coach='all',$nbrRes=self::DEFAULT_MAX_RESULT){
         if((isset($mission))&&(isset($coach))){
             if($coach=='all'){

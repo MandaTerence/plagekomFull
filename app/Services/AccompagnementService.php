@@ -148,6 +148,38 @@ class AccompagnementService {
             ];
             $jours[] =$jour;
         }
-        return $jours; 
+        return $jours;
+    }
+
+    public static function toFormatParJourAcc($acc){
+        $jour=[
+            'Coach'=>$accs[$i]->Coach,
+            'jour'=>$accs[$i]->Date,
+            'matin'=>[
+                [
+                    'Commercial'=>$accs[$i]->Commercial,
+                    'Heure_debut'=>$accs[$i]->Heure_debut,
+                    'Heure_fin'=>$accs[$i]->Heure_fin
+                ],
+                [
+                    'Commercial'=>$accs[$i+1]->Commercial,
+                    'Heure_debut'=>$accs[$i+1]->Heure_debut,
+                    'Heure_fin'=>$accs[$i+1]->Heure_fin
+                ]    
+            ],
+            'apresMidi'=>[
+                [
+                    'Commercial'=>$accs[$i+2]->Commercial,
+                    'Heure_debut'=>$accs[$i+2]->Heure_debut,
+                    'Heure_fin'=>$accs[$i+2]->Heure_fin
+                ],
+                [
+                    'Commercial'=>$accs[$i+3]->Commercial,
+                    'Heure_debut'=>$accs[$i+3]->Heure_debut,
+                    'Heure_fin'=>$accs[$i+3]->Heure_fin
+                ]
+            ]
+        ];
+        return $jourgetFromMissionAndCoach;
     }
 }

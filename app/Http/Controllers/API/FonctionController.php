@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Fonction;
 use Illuminate\Http\Request;
+use App\Helpers\ControllerHelper;
 
 class FonctionController extends Controller
 {
@@ -15,32 +16,24 @@ class FonctionController extends Controller
     ];
 
     public function index(Request $request){
-        $conditions = [];
-        $res = [];
-        if(isset($request->criteres)){
-            foreach($request->criteres as $column => $value){
-                $conditions[] = [$column,'like',$value];
-            }
+        try{
+            $fonctions = Fonction::getAllauthorisedId(ControllerHelper::getConditions($request));
+            $response = 
+            [
+                'success'=> true,
+                'message'=> count($fonctions).' results founds',
+                'fonctions'=> $fonctions,
+            ];
+            return $response;
+        } 
+        catch (\Illuminate\Database\QueryException $exception) {
+            $response = 
+            [
+                'success'=> false,
+                'message'=> $exception->errorInfo
+            ];
+            return $response;
         }
-        $fonctions = Fonction::where($conditions)
-            ->take(self::DEFAULT_MAX_RESULT)
-            ->get();
-
-        
-
-        foreach($fonctions as $f){
-            foreach(self::AUTHORISED_ID as $id){
-                if($f->id==$id){
-                    $res[] = $f;
-                }
-            }
-        }
-
-        foreach (self::CUSTOM_FONCTION as $customFonction) {
-            $res[] = (object)$customFonction;
-        }
-
-        return $res; 
     }
 
 }

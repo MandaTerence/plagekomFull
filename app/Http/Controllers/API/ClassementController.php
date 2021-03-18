@@ -26,37 +26,25 @@ class ClassementController extends Controller
     }
 
     public function getPlanning(Request $request){
-        if((isset($request->idMission))&&(isset($request->coach))){
+        if(isset($request->idMission)){
             $idMission = $request->idMission;
-            if($request->coach!='all'){
-                $coach = $request->coach;
-                $acc = Accompagnement::getFromMissionAndCoach($idMission,$coach);
-                $accParJour = AccompagnementService::toFormatParJour($acc);
-                $response = [
-                    'success' => true,
-                    'data' => [$accParJour],
-                ];
-                return $response;
-            }
-            else{
-                $coachs = Accompagnement::getCoachsFromMission($idMission);
-                $accParJour = [];
-                if(isset($coachs)){
-                    foreach($coachs as $coach){
-                        $acc = Accompagnement::getFromMissionAndCoach($idMission,$coach->Coach);
-                        $accParJour[] = AccompagnementService::toFormatParJour($acc);
-                    }
+            $coachs = Accompagnement::getCoachsFromMission($idMission);
+            $accParJour = [];
+            if(isset($coachs)){
+                foreach($coachs as $coach){
+                    $acc = Accompagnement::getFromMissionAndCoach($idMission,$coach->Coach);
+                    $accParJour[] = [
+                        "coach"=>$coach,
+                        "accompagnement"=>AccompagnementService::toFormatParJour($acc),
+                        "Commerciaux"=>Accompagnement::getCommerciaux($idMission,$coach->Coach)
+                    ];
                 }
-                $response = [
-                    'success' => true,
-                    'data' => $accParJour,
-                    'coach'=> $coachs,
-                ];
-                return $response;
             }
-        }
-        else{
-
+            $response = [
+                'success' => true,
+                'plannings' => $accParJour,
+            ];
+            return $response;
         }
     }
 

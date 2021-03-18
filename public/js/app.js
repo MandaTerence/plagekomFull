@@ -16515,6 +16515,55 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js":
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js ***!
+  \*********************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "ControleTelephonique",
+  data: function data() {
+    return {
+      matricule: '',
+      personnelData: []
+    };
+  },
+  created: function created() {
+    this.loadURLdata();
+  },
+  methods: {
+    loadURLdata: function loadURLdata() {
+      var urlParams = new URLSearchParams(window.location.search);
+
+      if (urlParams.get('matricule')) {
+        this.matricule = urlParams.get('matricule');
+      }
+    },
+    getPersonnel: function getPersonnel() {
+      var _this = this;
+
+      if (this.matricule != '') {
+        axios.get('/api/personnel/getFirstWhere', {
+          params: {
+            matricule: this.matricule
+          }
+        }).then(function (response) {
+          _this.personnelData = response.data.personnel;
+          alert(_this.personnelData);
+        });
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/CreationEquipe.vue?vue&type=script&lang=js":
 /*!***************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/CreationEquipe.vue?vue&type=script&lang=js ***!
@@ -16554,20 +16603,21 @@ __webpack_require__.r(__webpack_exports__);
     loadFonctions: function loadFonctions() {
       var _this = this;
 
-      //this.$axios.get('/sanctum/csrf-cookie').then(response => {
       this.$axios.get('/api/fonctions').then(function (response) {
-        _this.fonctions = response.data; //alert(JSON.stringify(this.fonctions));
-
-        _this.idFonction = _this.fonctions[0].id;
-        _this.customId = _this.fonctions[0].customId; //this.searchPersonnels();
+        if (response.data.success) {
+          _this.fonctions = response.data.fonctions;
+          _this.idFonction = _this.fonctions[0].id;
+          _this.customId = _this.fonctions[0].customId;
+        } else {
+          console.log(response.data.message);
+        }
       })["catch"](function (error) {
         console.error(error);
-      }); //})
+      });
     },
     loadMissions: function loadMissions() {
       var _this2 = this;
 
-      //this.$axios.get('/sanctum/csrf-cookie').then(response => {
       this.$axios.get('/api/missions', {
         params: {
           criteres: {
@@ -16576,15 +16626,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.data.success) {
-          //alert(response.message);
-          _this2.missions = response.data.data;
+          _this2.missions = response.data.missions;
           _this2.idMission = _this2.missions[0].Id_de_la_mission;
         } else {
           console.log(response.data.message);
         }
       })["catch"](function (error) {
         console.error(error);
-      }); //})
+      });
     },
     fonctionOnChange: function fonctionOnChange() {
       this.resultats = [];
@@ -16624,7 +16673,6 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.commerciaux.length < this.maxCommerciaux) {
         alert("il manque " + (this.maxCommerciaux - this.commerciaux.length) + " commerciaux");
       } else {
-        //alert(JSON.stringify(this.getMatriculeAndPlaceFromArray(this.classements)));
         axios.post('/api/classements/', {
           matriculeCoach: this.coachs[0].Matricule,
           matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),
@@ -16633,8 +16681,7 @@ __webpack_require__.r(__webpack_exports__);
           if (response.data.success) {
             _this3.showModal = false;
 
-            _this3.testRouter(_this3.idMission, _this3.coachs[0].Matricule); //this.$router.push({ name: 'planning', params: { idMission: '123' } });
-
+            _this3.testRouter(_this3.idMission, _this3.coachs[0].Matricule);
           } else if (!response.data.success) {
             alert('insertion echoué');
           }
@@ -16656,7 +16703,7 @@ __webpack_require__.r(__webpack_exports__);
           _this4.isSearchingAutoComplete = false;
 
           if (response.data.success) {
-            _this4.resultats = response.data.personnels; //alert(JSON.stringify(this.resultats));
+            _this4.resultats = response.data.personnels;
           } else {
             alert(response.data.message);
           }
@@ -16696,7 +16743,7 @@ __webpack_require__.r(__webpack_exports__);
       var matricules = [];
 
       for (var i = 0; i < personnels.length; i++) {
-        matricules.push(personnels[i]['Matricule']); //matricules.push(personnel.Matricule);
+        matricules.push(personnels[i]['Matricule']);
       }
 
       return matricules;
@@ -16728,26 +16775,27 @@ __webpack_require__.r(__webpack_exports__);
       var _this6 = this;
 
       this.addPersonnelToTable(this.coachs, coach);
-      axios.get('/api/personnels/searchPersonnelFromCoach', {
-        params: {
-          coach: coach.Matricule,
-          idMission: this.idMission
-        }
-      }).then(function (response) {
-        //this.addPersonnelToTable(this.coachs,response.data.personnel);
-        for (var i = 0; i < response.data.data.length; i++) {
-          if (_this6.commerciaux.length >= _this6.maxCommerciaux) {} else if (response.data.data[i].Matricule != coach.Matricule) {
-            _this6.addPersonnelToTable(_this6.commerciaux, response.data.data[i]);
+
+      if (coach != '') {
+        axios.get('/api/personnels/getPersonnelFromCoach', {
+          params: {
+            coach: coach.Matricule,
+            idMission: this.idMission
           }
-        }
-      });
+        }).then(function (response) {
+          for (var i = 0; i < response.data.data.length; i++) {
+            if (_this6.commerciaux.length >= _this6.maxCommerciaux) {} else if (response.data.data[i].Matricule != coach.Matricule) {
+              _this6.addPersonnelToTable(_this6.commerciaux, response.data.data[i]);
+            }
+          }
+        });
+      }
     },
     addPersonnel: function addPersonnel() {
       var _this7 = this;
 
       if (this.customId == null) {
         if (this.matricule != null && this.idFonction != null) {
-          //this.$axios.get('/sanctum/csrf-cookie').then(response => {
           axios.get('/api/personnels/getFirstWhere', {
             params: {
               criteres: {
@@ -16773,35 +16821,33 @@ __webpack_require__.r(__webpack_exports__);
             } else {
               alert('aucun resultat trouvé');
             }
-          }); //});
+          });
         }
       } else {
-        this.$axios.get('/sanctum/csrf-cookie').then(function (response) {
-          _this7.customId.forEach(function (element) {
-            axios.get('/api/personnels/getFirstWhere', {
-              params: {
-                criteres: {
-                  Fonction_actuelle: element,
-                  Matricule: _this7.matricule
-                }
+        this.customId.forEach(function (element) {
+          axios.get('/api/personnels/getFirstWhere', {
+            params: {
+              criteres: {
+                Fonction_actuelle: element,
+                Matricule: _this7.matricule
               }
-            }).then(function (response) {
-              if (response.data.success) {
-                if (response.data.personnel.Fonction_actuelle == 2) {
-                  if (_this7.coachs.length > _this7.maxCoach - 1) {
-                    alert("il existe deja un coach");
-                  } else {
-                    _this7.addPersonnelToTable(_this7.coachs, response.data.personnel);
-                  }
+            }
+          }).then(function (response) {
+            if (response.data.success) {
+              if (response.data.personnel.Fonction_actuelle == 2) {
+                if (_this7.coachs.length > _this7.maxCoach - 1) {
+                  alert("il existe deja un coach");
                 } else {
-                  if (_this7.commerciaux.length > _this7.maxCommerciaux - 1) {
-                    alert("la limite de commerciaux :" + _this7.maxCommerciaux + " est deja atteinte");
-                  } else {
-                    _this7.addPersonnelToTable(_this7.commerciaux, response.data.personnel);
-                  }
+                  _this7.addPersonnelToTable(_this7.coachs, response.data.personnel);
+                }
+              } else {
+                if (_this7.commerciaux.length > _this7.maxCommerciaux - 1) {
+                  alert("la limite de commerciaux :" + _this7.maxCommerciaux + " est deja atteinte");
+                } else {
+                  _this7.addPersonnelToTable(_this7.commerciaux, response.data.personnel);
                 }
               }
-            });
+            }
           });
         });
       }
@@ -17010,25 +17056,28 @@ __webpack_require__.r(__webpack_exports__);
       idMission: '',
       plannings: [],
       coach: 'all',
+      showPlanning: true,
       isSearchingAutoComplete: false
     };
   },
   created: function created() {
-    var urlParams = new URLSearchParams(window.location.search);
-
-    if (urlParams.get('idMission')) {
-      this.idMission = urlParams.get('idMission');
-    }
-
-    if (urlParams.get('coach')) this.coach = urlParams.get('coach');
+    this.loadURLdata();
     this.loadMissions();
     this.loadPlannig();
   },
   methods: {
+    loadURLdata: function loadURLdata() {
+      var urlParams = new URLSearchParams(window.location.search);
+
+      if (urlParams.get('idMission')) {
+        this.idMission = urlParams.get('idMission');
+      }
+
+      if (urlParams.get('coach')) this.coach = urlParams.get('coach');
+    },
     loadMissions: function loadMissions() {
       var _this = this;
 
-      //this.$axios.get('/sanctum/csrf-cookie').then(response => {
       this.$axios.get('/api/missions', {
         params: {
           criteres: {
@@ -17037,14 +17086,20 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.data.success) {
-          //alert(response.message);
-          _this.missions = response.data.data; //this.idMission = this.missions[0].Id_de_la_mission;
+          _this.missions = response.data.data;
         } else {
           console.log(response.data.message);
         }
       })["catch"](function (error) {
         console.error(error);
-      }); //})
+      });
+    },
+    displayPlanning: function displayPlanning(coach) {
+      for (var i = 0; i < this.plannings.length; i++) {
+        if (this.plannings[i].coach == coach) {
+          this.plannings[i].visibility ? this.plannings[i].visibility = false : this.plannings[i].visibility = true;
+        }
+      }
     },
     loadPlannig: function loadPlannig() {
       var _this2 = this;
@@ -17057,7 +17112,11 @@ __webpack_require__.r(__webpack_exports__);
               coach: _this2.coach
             }
           }).then(function (response) {
-            _this2.plannings = response.data.data;
+            _this2.plannings = response.data.plannings;
+
+            for (var i = 0; i < _this2.plannings.length; i++) {
+              _this2.plannings[i].visibility = true;
+            }
           });
         });
       }
@@ -17076,7 +17135,6 @@ __webpack_require__.r(__webpack_exports__);
     searchAutoComplete: function searchAutoComplete() {
       var _this3 = this;
 
-      //this.missions = [];
       this.$axios.get('/api/missions', {
         params: {
           criteres: {
@@ -17803,6 +17861,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return " of " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.matricule) + " ! ";
+}
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/CreationEquipe.vue?vue&type=template&id=2caae486":
 /*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/CreationEquipe.vue?vue&type=template&id=2caae486 ***!
@@ -18517,30 +18594,35 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 );
 
 var _hoisted_5 = {
-  key: 0
+  key: 1
 };
-var _hoisted_6 = {
-  "class": "row"
-};
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h1", null, "Equipe", -1
+/* HOISTED */
+);
+
 var _hoisted_7 = {
-  "class": "col-3"
+  "class": "row"
 };
 var _hoisted_8 = {
-  "class": "row"
+  "class": "col-3"
 };
 var _hoisted_9 = {
+  "class": "row"
+};
+var _hoisted_10 = {
   "class": "col-md-6"
 };
 
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Matin", -1
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Matin", -1
 /* HOISTED */
 );
 
-var _hoisted_11 = {
+var _hoisted_12 = {
   "class": "table"
 };
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", {
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", {
   "class": "bg-primary",
   style: {
     "color": "white"
@@ -18549,19 +18631,19 @@ var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 /* HOISTED */
 );
 
-var _hoisted_13 = {
+var _hoisted_14 = {
   "class": "col-md-6"
 };
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Apres Midi", -1
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Apres Midi", -1
 /* HOISTED */
 );
 
-var _hoisted_15 = {
+var _hoisted_16 = {
   "class": "table"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", {
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", {
   "class": "bg-primary",
   style: {
     "color": "white"
@@ -18570,7 +18652,7 @@ var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 /* HOISTED */
 );
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("hr", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("hr", {
   style: {
     "background-color": "#3490dc"
   }
@@ -18599,20 +18681,33 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* KEYED_FRAGMENT */
   ))], 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.idMission]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.plannings, function (tabPlannings) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.idMission]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.plannings, function (planningCoach) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
-      key: tabPlannings
-    }, [tabPlannings.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("h1", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(tabPlannings[0].Coach), 1
-    /* TEXT */
-    )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(tabPlannings, function (planning) {
+      key: planningCoach
+    }, [planningCoach.accompagnement.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("h1", {
+      key: 0,
+      onClick: function onClick($event) {
+        return $options.displayPlanning(planningCoach.coach);
+      }
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planningCoach.coach.Coach), 9
+    /* TEXT, PROPS */
+    , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), planningCoach.visibility == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(planningCoach.Commerciaux, function (commercial) {
+      return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", {
+        key: commercial
+      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(commercial.Commercial), 1
+      /* TEXT */
+      );
+    }), 128
+    /* KEYED_FRAGMENT */
+    ))])]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(planningCoach.accompagnement, function (planning) {
       return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
         style: {
           "margin-top": "50px"
         },
         key: planning
-      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning['jour']), 1
+      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning['jour']), 1
       /* TEXT */
-      )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.matin[0].Heure_debut)) + " à " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.matin[0].Heure_fin)), 1
+      )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_12, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.matin[0].Heure_debut)) + " à " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.matin[0].Heure_fin)), 1
       /* TEXT */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning.matin[0].Commercial), 1
       /* TEXT */
@@ -18620,7 +18715,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* TEXT */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning.matin[1].Commercial), 1
       /* TEXT */
-      )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.apresMidi[0].Heure_debut)) + " à " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.apresMidi[0].Heure_fin)), 1
+      )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.apresMidi[0].Heure_debut)) + " à " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.formatHeure(planning.apresMidi[0].Heure_fin)), 1
       /* TEXT */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning.apresMidi[0].Commercial), 1
       /* TEXT */
@@ -18628,10 +18723,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* TEXT */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(planning.apresMidi[1].Commercial), 1
       /* TEXT */
-      )])])])]), _hoisted_17]);
+      )])])])]), _hoisted_18]);
     }), 128
     /* KEYED_FRAGMENT */
-    ))]);
+    ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
   }), 128
   /* KEYED_FRAGMENT */
   ))])], 64
@@ -18725,16 +18820,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "routes": () => (/* binding */ routes),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
 /* harmony import */ var _pages_CreationEquipe__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../pages/CreationEquipe */ "./resources/js/pages/CreationEquipe.vue");
 /* harmony import */ var _pages_Home__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../pages/Home */ "./resources/js/pages/Home.vue");
 /* harmony import */ var _pages_About__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../pages/About */ "./resources/js/pages/About.vue");
 /* harmony import */ var _pages_Login__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../pages/Login */ "./resources/js/pages/Login.vue");
 /* harmony import */ var _pages_Dashboard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../pages/Dashboard */ "./resources/js/pages/Dashboard.vue");
 /* harmony import */ var _pages_Planning__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../pages/Planning */ "./resources/js/pages/Planning.vue");
-/* harmony import */ var _components_Books__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/Books */ "./resources/js/components/Books.vue");
-/* harmony import */ var _components_AddBook__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/AddBook */ "./resources/js/components/AddBook.vue");
-/* harmony import */ var _components_EditBook__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/EditBook */ "./resources/js/components/EditBook.vue");
+/* harmony import */ var _pages_ControleTelephonique__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../pages/ControleTelephonique */ "./resources/js/pages/ControleTelephonique.vue");
+/* harmony import */ var _components_Books__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/Books */ "./resources/js/components/Books.vue");
+/* harmony import */ var _components_AddBook__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/AddBook */ "./resources/js/components/AddBook.vue");
+/* harmony import */ var _components_EditBook__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/EditBook */ "./resources/js/components/EditBook.vue");
+
 
 
 
@@ -18768,22 +18865,26 @@ var routes = [{
 }, {
   name: 'books',
   path: '/books',
-  component: _components_Books__WEBPACK_IMPORTED_MODULE_6__.default
+  component: _components_Books__WEBPACK_IMPORTED_MODULE_7__.default
 }, {
   name: 'addbook',
   path: '/books/add',
-  component: _components_AddBook__WEBPACK_IMPORTED_MODULE_7__.default
+  component: _components_AddBook__WEBPACK_IMPORTED_MODULE_8__.default
 }, {
   name: 'editbook',
   path: '/books/edit/:idMission',
-  component: _components_EditBook__WEBPACK_IMPORTED_MODULE_8__.default
+  component: _components_EditBook__WEBPACK_IMPORTED_MODULE_9__.default
 }, {
   name: 'planning',
   path: '/planning',
   component: _pages_Planning__WEBPACK_IMPORTED_MODULE_5__.default
+}, {
+  name: 'controleTelephonique',
+  path: '/controleTelephonique',
+  component: _pages_ControleTelephonique__WEBPACK_IMPORTED_MODULE_6__.default
 }];
-var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_9__.createRouter)({
-  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_9__.createWebHistory)(),
+var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_10__.createRouter)({
+  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_10__.createWebHistory)(),
   routes: routes
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
@@ -54294,6 +54395,32 @@ _About_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file =
 
 /***/ }),
 
+/***/ "./resources/js/pages/ControleTelephonique.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/pages/ControleTelephonique.vue ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ControleTelephonique_vue_vue_type_template_id_271ef5ec__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ControleTelephonique.vue?vue&type=template&id=271ef5ec */ "./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec");
+/* harmony import */ var _ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ControleTelephonique.vue?vue&type=script&lang=js */ "./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js");
+
+
+
+_ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.render = _ControleTelephonique_vue_vue_type_template_id_271ef5ec__WEBPACK_IMPORTED_MODULE_0__.render
+/* hot reload */
+if (false) {}
+
+_ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default.__file = "resources/js/pages/ControleTelephonique.vue"
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__.default);
+
+/***/ }),
+
 /***/ "./resources/js/pages/CreationEquipe.vue":
 /*!***********************************************!*\
   !*** ./resources/js/pages/CreationEquipe.vue ***!
@@ -54504,6 +54631,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__.default)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ControleTelephonique_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./ControleTelephonique.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
 /***/ "./resources/js/pages/CreationEquipe.vue?vue&type=script&lang=js":
 /*!***********************************************************************!*\
   !*** ./resources/js/pages/CreationEquipe.vue?vue&type=script&lang=js ***!
@@ -54660,6 +54803,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_About_vue_vue_type_template_id_520b5d54__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_About_vue_vue_type_template_id_520b5d54__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./About.vue?vue&type=template&id=520b5d54 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/About.vue?vue&type=template&id=520b5d54");
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ControleTelephonique_vue_vue_type_template_id_271ef5ec__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_ControleTelephonique_vue_vue_type_template_id_271ef5ec__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./ControleTelephonique.vue?vue&type=template&id=271ef5ec */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/pages/ControleTelephonique.vue?vue&type=template&id=271ef5ec");
 
 
 /***/ }),

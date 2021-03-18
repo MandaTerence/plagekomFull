@@ -232,37 +232,35 @@ export default {
     },
     methods: {
         loadFonctions(){
-            //this.$axios.get('/sanctum/csrf-cookie').then(response => {
-                this.$axios.get('/api/fonctions') 
-                .then(response => {
-                    this.fonctions = response.data;
-                    //alert(JSON.stringify(this.fonctions));
+            this.$axios.get('/api/fonctions') 
+            .then(response => {
+                if(response.data.success){
+                    this.fonctions = response.data.fonctions;
                     this.idFonction = this.fonctions[0].id;
                     this.customId = this.fonctions[0].customId;
-                    //this.searchPersonnels();
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
-            //})
+                }
+                else{
+                    console.log(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
         },
         loadMissions(){
-            //this.$axios.get('/sanctum/csrf-cookie').then(response => {
-                this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
-                .then(response => {
-                    if(response.data.success){
-                        //alert(response.message);
-                        this.missions = response.data.data;
-                        this.idMission = this.missions[0].Id_de_la_mission;
-                    }
-                    else{
-                        console.log(response.data.message);
-                    }
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
-            //})
+            this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
+            .then(response => {
+                if(response.data.success){
+                    this.missions = response.data.missions;
+                    this.idMission = this.missions[0].Id_de_la_mission;
+                }
+                else{
+                    console.log(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
         },
         fonctionOnChange(){
             this.resultats = [];
@@ -299,12 +297,10 @@ export default {
                 alert("il manque "+(this.maxCommerciaux-this.commerciaux.length)+" commerciaux");
             }
             else{
-                //alert(JSON.stringify(this.getMatriculeAndPlaceFromArray(this.classements)));
                 axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),idMission:this.idMission}).then(response => {
                     if(response.data.success){
                         this.showModal = false;
                         this.testRouter(this.idMission,this.coachs[0].Matricule);
-                        //this.$router.push({ name: 'planning', params: { idMission: '123' } });
                     }
                     else if(!response.data.success){
                         alert('insertion echoué');
@@ -319,7 +315,6 @@ export default {
                     this.isSearchingAutoComplete = false;
                     if(response.data.success){
                         this.resultats = response.data.personnels;
-                        //alert(JSON.stringify(this.resultats));
                     }
                     else{
                         alert(response.data.message);
@@ -352,7 +347,6 @@ export default {
             let matricules = [];
             for(let i=0;i<personnels.length;i++){
                 matricules.push(personnels[i]['Matricule']);
-                //matricules.push(personnel.Matricule);
             }
             return matricules;
         },
@@ -374,65 +368,62 @@ export default {
         },
         addEquipeFromCoach(coach){
             this.addPersonnelToTable(this.coachs,coach);
-            axios.get('/api/personnels/searchPersonnelFromCoach',{params: {coach: coach.Matricule,idMission: this.idMission}}).then(response => {
-                //this.addPersonnelToTable(this.coachs,response.data.personnel);
-                for(let i=0;i<response.data.data.length;i++){
-                    if(this.commerciaux.length>=this.maxCommerciaux){
-                        
+            if(coach!=''){
+                axios.get('/api/personnels/getPersonnelFromCoach',{params: {coach: coach.Matricule,idMission: this.idMission}}).then(response => {
+                    for(let i=0;i<response.data.data.length;i++){
+                        if(this.commerciaux.length>=this.maxCommerciaux){
+                            
+                        }
+                        else if(response.data.data[i].Matricule!=coach.Matricule){
+                            this.addPersonnelToTable(this.commerciaux,response.data.data[i]);
+                        }
                     }
-                    else if(response.data.data[i].Matricule!=coach.Matricule){
-                        this.addPersonnelToTable(this.commerciaux,response.data.data[i]);
-                    }
-                }
-            });
+                });
+            }
         },
         addPersonnel(){
             if(this.customId == null){
                 if((this.matricule!=null)&&(this.idFonction!=null)){
-                    //this.$axios.get('/sanctum/csrf-cookie').then(response => {
-                        axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: this.idFonction,Matricule: this.matricule}}}).then(response => {
-                            if(response.data.success){
-                                if(response.data.personnel.Fonction_actuelle == 2){
-                                    if(this.coachs.length > (this.maxCoach-1)){
-                                        alert("il existe deja un coach");
-                                    }else{
-                                        this.addEquipeFromCoach(response.data.personnel);
-                                    }
+                    axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: this.idFonction,Matricule: this.matricule}}}).then(response => {
+                        if(response.data.success){
+                            if(response.data.personnel.Fonction_actuelle == 2){
+                                if(this.coachs.length > (this.maxCoach-1)){
+                                    alert("il existe deja un coach");
                                 }else{
-                                    if(this.commerciaux.length > (this.maxCommerciaux-1)){
-                                        alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
-                                    }else{
-                                        this.addPersonnelToTable(this.commerciaux,response.data.personnel);
-                                    }
+                                    this.addEquipeFromCoach(response.data.personnel);
+                                }
+                            }else{
+                                if(this.commerciaux.length > (this.maxCommerciaux-1)){
+                                    alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
+                                }else{
+                                    this.addPersonnelToTable(this.commerciaux,response.data.personnel);
                                 }
                             }
-                            else{
-                                alert('aucun resultat trouvé');
-                            }
-                        });
-                    //});
+                        }
+                        else{
+                            alert('aucun resultat trouvé');
+                        }
+                    });
                 }
             }else{
-                this.$axios.get('/sanctum/csrf-cookie').then(response => {
-                    this.customId.forEach(element => {
-                        axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: element,Matricule: this.matricule}}}).then(response => {
-                            if(response.data.success){
-                                if(response.data.personnel.Fonction_actuelle == 2){
-                                    if(this.coachs.length > (this.maxCoach-1)){
-                                        alert("il existe deja un coach");
-                                    }else{
-                                        this.addPersonnelToTable(this.coachs,response.data.personnel);
-                                    }
+                this.customId.forEach(element => {
+                    axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: element,Matricule: this.matricule}}}).then(response => {
+                        if(response.data.success){
+                            if(response.data.personnel.Fonction_actuelle == 2){
+                                if(this.coachs.length > (this.maxCoach-1)){
+                                    alert("il existe deja un coach");
                                 }else{
-                                    if(this.commerciaux.length > (this.maxCommerciaux-1)){
-                                        alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
-                                    }else{
-                                        this.addPersonnelToTable(this.commerciaux,response.data.personnel);
-                                    }
+                                    this.addPersonnelToTable(this.coachs,response.data.personnel);
+                                }
+                            }else{
+                                if(this.commerciaux.length > (this.maxCommerciaux-1)){
+                                    alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
+                                }else{
+                                    this.addPersonnelToTable(this.commerciaux,response.data.personnel);
                                 }
                             }
-                        });  
-                    });
+                        }
+                    });  
                 });
             }
         },

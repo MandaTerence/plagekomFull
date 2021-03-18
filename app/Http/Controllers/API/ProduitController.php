@@ -3,20 +3,21 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Produit;
 use App\Helpers\ControllerHelper;
 use Illuminate\Http\Request;
-use App\Models\Mission;
 
-class MissionController extends Controller
+class ProduitController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         try{
-            $missions = Mission::getAllId(ControllerHelper::getConditions($request));
+            $produits = Produit::getAll(ControllerHelper::getConditions($request));
             $response = 
             [
                 'success'=> true,
-                'message'=> count($missions).' results founds',
-                'missions'=> $missions,
+                'message'=> count($produits).' results founds',
+                'missions'=> $produits,
             ];
             return $response;
         } 
@@ -27,6 +28,6 @@ class MissionController extends Controller
                 'message'=> $exception->errorInfo
             ];
             return $response;
-        }
+        }  
     }
 }
