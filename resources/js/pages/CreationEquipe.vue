@@ -1,107 +1,8 @@
 <template>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="inputMission">Mission</label>
-            <select class="form-control" id="inputMission" v-model="idMission" >
-                <option v-bind:key="mission.Id_de_la_mission" v-bind:value="mission.Id_de_la_mission" v-for="mission in missions">{{ mission.Id_de_la_mission }}</option>
-            </select>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputFonction">Fonction</label>
-            <select class="form-control" id="inputFonction" v-model="idFonction" v-on:change="changeCustomId">
-                <option v-bind:key="fonction.designation" v-bind:value="fonction.id" v-for="fonction in fonctions">{{ fonction.designation }}</option>
-            </select>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputMatricule">Matricule</label>
-            <input type="text" placeholder="what are you looking for?" v-model="matricule" class="form-control" v-on:keyup="autoComplete" v-on:click="autoComplete">
-            <div class="panel-footer" style="float:top">
-                <ul class="list-group">
-                    <li class="list-group-item" v-for="result in resultats" v-bind:key="result" v-on:click.left="changeMatriculeValue(result.Matricule)" >
-                        <div >{{ result.Matricule }}</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <button class="d-none d-lg-block btn btn-primary " style="margin:30px" v-on:click="addPersonnel">Ajouter</button>
-        </div>
-    </div>
-    <button class="d-block d-lg-none btn btn-primary " style="margin:30px" v-on:click="addPersonnel">Ajouter</button>
-    <div class="row">
-        <div class="col-6">
-            <h4>Coachs</h4>
-        </div>
-        <div class="col-6">
-            <h4 class="text-right">Nombre: {{coachs.length }}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <table class="table table-hover">
-            <thead >
-                <tr class="bg-primary" style="color:white">
-                    <th scope="col-md-2">matricule</th>
-                    <th scope="col-md-2">nom et prenom</th>
-                    <th scope="col-md-2">C.A</th>
-                    <th scope="col-md-1"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="coach in coachs" v-bind:key="coach">
-                    <td scope="col-md-2">{{ coach.Matricule }}</td>
-                    <td scope="col-md-2">{{ coach.Nom+" "+coach.Prenom }}</td>
-                    <td scope="col-md-2">{{ coach.CA }}</td>
-                    <td scope="col-md-1">
-                        <button class="btn btn-danger" v-on:click="remove(coachs,coach.Matricule)">
-                        <div class="d-none d-lg-block">
-                            supprimer
-                        </diV>
-                        <div class="d-block d-lg-none">
-                           X
-                        </div>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <h4>Commerciaux</h4>
-        </div>
-        <div class="col-6">
-            <h4 class="text-right">Nombre: {{commerciaux.length }}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <table class="table table-hover">
-            <thead >
-                <tr class="bg-primary" style="color:white">
-                    <th scope="col-md-2">matricule</th>
-                    <th scope="col-md-2 d-none">nom et prenom</th>
-                    <th scope="col-md-2">C.A</th>
-                    <th scope="col-md-1"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="commercial in commerciaux" v-bind:key="commercial">
-                    <td scope="col-md-2">{{ commercial.Matricule }}</td>
-                    <td scope="col-md-2">{{ commercial.Nom+commercial.Prenom }}</td>
-                    <td scope="col-md-2">{{ commercial.CA }}</td>
-                    <td scope="col-md-1">
-                        <button class="btn btn-danger" v-on:click="remove(commerciaux,commercial.Matricule)">
-                        <div class="d-none d-lg-block">
-                            supprimer
-                        </diV>
-                        <div class="d-block d-lg-none">
-                           X
-                        </div>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs"/>
+    <EquipeTab v-model:equipes="coachs" titre="Coachs"/>
+    <EquipeTab v-model:equipes="commerciaux" titre="Commerciaux"/>
+
     <div class="row">
         <div class="col-12 text-right">
             <button class="btn btn-primary" v-on:click="getClassement">lancer le classement</button>
@@ -112,26 +13,6 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <!--
-                    <div class="modal-header">
-                        <slot name="header">
-                        default header
-                        </slot>
-                    </div>
-                    <div class="modal-body">
-                        <slot name="body">
-                        default body
-                        </slot>
-                    </div>
-                    <div class="modal-footer">
-                        <slot name="footer">
-                            default footer
-                            <button class="modal-default-button" @click="$emit('close')">
-                                OK
-                            </button>
-                        </slot>
-                    </div>
-                    -->
                     <div class="modal-body">
                         <table class="table table-hover">
                             <thead >
@@ -206,10 +87,14 @@
 </template>
 
 <script>
+import EquipeTab from "../components/EquipeTab";
+import SearchPersonnel from "../components/SearchPersonnel";
+
 export default {
     name: "CreationEquipe",
     data() {
         return {
+            teste: "testtesttest",
             matricule: '',
             fonctions: [],
             missions: [],
@@ -227,41 +112,10 @@ export default {
         }
     },
     created() {
-        this.loadFonctions();
-        this.loadMissions();
+
     },
     methods: {
-        loadFonctions(){
-            this.$axios.get('/api/fonctions') 
-            .then(response => {
-                if(response.data.success){
-                    this.fonctions = response.data.fonctions;
-                    this.idFonction = this.fonctions[0].id;
-                    this.customId = this.fonctions[0].customId;
-                }
-                else{
-                    console.log(response.data.message);
-                }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-        },
-        loadMissions(){
-            this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
-            .then(response => {
-                if(response.data.success){
-                    this.missions = response.data.missions;
-                    this.idMission = this.missions[0].Id_de_la_mission;
-                }
-                else{
-                    console.log(response.data.message);
-                }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-        },
+        
         fonctionOnChange(){
             this.resultats = [];
             this.matricule = '';
@@ -308,33 +162,6 @@ export default {
                 });
             }
         },
-        searchAutoComplete(){
-            this.resultats = [];
-            if(this.customId == null){
-                axios.get('/api/personnels/getMatriculeByFonction',{params: {fonction: this.idFonction,search: this.matricule}}).then(response => {
-                    this.isSearchingAutoComplete = false;
-                    if(response.data.success){
-                        this.resultats = response.data.personnels;
-                    }
-                    else{
-                        alert(response.data.message);
-                    }
-                });
-            }
-            else{
-                this.customId.forEach(element => {
-                    axios.get('/api/personnels/getMatriculeByFonction',{params: {fonction: element,search: this.matricule}}).then(response => { 
-                        if(response.data.success){
-                            this.resultats = this.resultats.concat(response.data.personnels);
-                        }
-                        else{
-                            alert(response.data.message);
-                        }
-                    });
-                });
-                this.isSearchingAutoComplete = false;
-            }
-        },
         getMatriculeAndPlaceFromArray(personnels){
             let matricules = [];
             for(let i=0;i<personnels.length;i++){
@@ -366,89 +193,6 @@ export default {
                 
             });
         },
-        addEquipeFromCoach(coach){
-            this.addPersonnelToTable(this.coachs,coach);
-            if(coach!=''){
-                axios.get('/api/personnels/getPersonnelFromCoach',{params: {coach: coach.Matricule,idMission: this.idMission}}).then(response => {
-                    for(let i=0;i<response.data.data.length;i++){
-                        if(this.commerciaux.length>=this.maxCommerciaux){
-                            
-                        }
-                        else if(response.data.data[i].Matricule!=coach.Matricule){
-                            this.addPersonnelToTable(this.commerciaux,response.data.data[i]);
-                        }
-                    }
-                });
-            }
-        },
-        addPersonnel(){
-            if(this.customId == null){
-                if((this.matricule!=null)&&(this.idFonction!=null)){
-                    axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: this.idFonction,Matricule: this.matricule}}}).then(response => {
-                        if(response.data.success){
-                            if(response.data.personnel.Fonction_actuelle == 2){
-                                if(this.coachs.length > (this.maxCoach-1)){
-                                    alert("il existe deja un coach");
-                                }else{
-                                    this.addEquipeFromCoach(response.data.personnel);
-                                }
-                            }else{
-                                if(this.commerciaux.length > (this.maxCommerciaux-1)){
-                                    alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
-                                }else{
-                                    this.addPersonnelToTable(this.commerciaux,response.data.personnel);
-                                }
-                            }
-                        }
-                        else{
-                            alert('aucun resultat trouvé');
-                        }
-                    });
-                }
-            }else{
-                this.customId.forEach(element => {
-                    axios.get('/api/personnels/getFirstWhere',{params: {criteres: {Fonction_actuelle: element,Matricule: this.matricule}}}).then(response => {
-                        if(response.data.success){
-                            if(response.data.personnel.Fonction_actuelle == 2){
-                                if(this.coachs.length > (this.maxCoach-1)){
-                                    alert("il existe deja un coach");
-                                }else{
-                                    this.addPersonnelToTable(this.coachs,response.data.personnel);
-                                }
-                            }else{
-                                if(this.commerciaux.length > (this.maxCommerciaux-1)){
-                                    alert("la limite de commerciaux :"+this.maxCommerciaux+" est deja atteinte");
-                                }else{
-                                    this.addPersonnelToTable(this.commerciaux,response.data.personnel);
-                                }
-                            }
-                        }
-                    });  
-                });
-            }
-        },
-        addPersonnelToTable(table,personnel){
-            let exist = false
-            table.forEach(element => {
-                if(element.Matricule == personnel.Matricule){
-                    exist = true;
-                }
-            });
-            if(exist){
-                alert(personnel.Matricule+" est deja present");
-            }
-            else{
-                table.push(personnel);
-            }
-        },
-        remove(table,matricule){
-            for( var i = 0; i < table.length; i++){ 
-                if ( table[i].Matricule ==  matricule) { 
-                    table.splice(i, 1);
-                    i--; 
-                }
-            }
-        },
         recalculPlace(){
             let newClassement = [];
             for(let i=0;i<this.classements.length;i++){
@@ -456,7 +200,6 @@ export default {
                 newClassement[i].placeTemp = i+1;
                 newClassement[i].place = i+1;
             }
-            //this.classements.splice(0,this.classement.length);
             for(let i=0;i<this.classements.length;i++){
                 this.classements.splice(i,1,newClassement[i]);
             }
@@ -472,13 +215,7 @@ export default {
                 this.classements.splice(placeTemp-1, 0, elementTemp);
                 this.recalculPlace();
             }
-            /*
-            let  test = "";
-            for(let i=0;i<this.classements.length;i++){
-                test+= this.classements[i].Matricule+' T: '+this.classements[i].placeTemp+' P: '+this.classements[i].place+' '+this.classements[i].placeOriginal+'\n';
-            }
-            alert(test);
-            */
+            
         },
         testRouter(idMission,coach){
             this.$router.push({ name: 'planning', query: { idMission: idMission ,coach: coach} });
@@ -486,6 +223,16 @@ export default {
         test(){
             alert("test ok");
         },
+    },
+    beforeRouteEnter(to, from, next) {
+        if (!window.Laravel.isLoggedin) {
+            window.location.href = "/login";
+        }
+        next();
+    },
+    components: {
+        EquipeTab,
+        SearchPersonnel
     }
 }
 </script>

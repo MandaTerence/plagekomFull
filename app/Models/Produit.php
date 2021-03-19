@@ -10,6 +10,9 @@ class Produit extends Model
     use HasFactory;
     
     use HasFactory;
+
+    const DEFAULT_MAX_RESULT=10;
+
     protected $table = 'produit';
     protected $primaryKey = 'Code_produit';
     protected $keyType = 'string';
@@ -38,9 +41,14 @@ class Produit extends Model
         'statut'
     ];
 
-    public static function getAll($conditions){
+    public static function getAll($conditions=[]){
         return self::where($conditions)
         ->get();
     }
 
+    public static function getAllLimited($conditions=[],$nbrResult=self::DEFAULT_MAX_RESULT){
+        return self::where($conditions)
+        ->take($nbrResult)
+        ->get();
+    }
 }

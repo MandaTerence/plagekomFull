@@ -30,4 +30,25 @@ class ProduitController extends Controller
             return $response;
         }  
     }
+
+    public function getMatriculeAndWhere(Request $request){
+        try{
+            $produits = Produit::getAll(ControllerHelper::getConditions($request));
+            $response = 
+            [
+                'success'=> true,
+                'message'=> count($produits).' results founds',
+                'missions'=> $produits,
+            ];
+            return $response;
+        } 
+        catch (\Illuminate\Database\QueryException $exception) {
+            $response = 
+            [
+                'success'=> false,
+                'message'=> $exception->errorInfo
+            ];
+            return $response;
+        }  
+    }
 }
