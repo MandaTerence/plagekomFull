@@ -1,4 +1,6 @@
 <template>
+    <SearchProduit v-model:produits="produits"/>
+    <ProduitTab v-model:produits="produits"/>
     <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs"/>
     <EquipeTab v-model:equipes="coachs" titre="Coachs"/>
     <EquipeTab v-model:equipes="commerciaux" titre="Commerciaux"/>
@@ -89,26 +91,35 @@
 <script>
 import EquipeTab from "../components/EquipeTab";
 import SearchPersonnel from "../components/SearchPersonnel";
+import SearchProduit from "../components/SearchProduit";
+import ProduitTab from "../components/ProduitTab";
 
 export default {
     name: "CreationEquipe",
     data() {
         return {
-            teste: "testtesttest",
-            matricule: '',
-            fonctions: [],
-            missions: [],
-            commerciaux: [],
-            coachs: [],
-            resultats: [],
-            classements: [],
-            idFonction: null,
-            idMission: null,
             isSearchingAutoComplete: false,
             maxCoach:1,
             maxCommerciaux:8,
-            customId: null,
             showModal: false,
+
+            matricule: '',
+
+            fonctions: [],
+            missions: [],
+
+            commerciaux: [],
+            coachs: [],
+            produits: [],
+
+            idFonction: null,
+            idMission: null,
+            idProduit: null,
+
+            customId: null,
+
+            resultats: [],
+            classements: [],
         }
     },
     created() {
@@ -232,7 +243,9 @@ export default {
     },
     components: {
         EquipeTab,
-        SearchPersonnel
+        SearchPersonnel,
+        SearchProduit,
+        ProduitTab
     }
 }
 </script>

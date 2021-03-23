@@ -166,9 +166,6 @@ class PersonnelController extends Controller
             'personnel' => $data,
         ];
         return response()->json($response);
-    
-    
-    
     }
 
 }

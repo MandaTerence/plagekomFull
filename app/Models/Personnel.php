@@ -50,6 +50,10 @@ class Personnel extends Model
         'statut',
     ];
 
+    public static function getCAByProduit($idProduit){
+        
+    }
+
     static function getFirstWithCA($conditions){
         $personnel = self::where($conditions)
         ->select('Matricule', 'Nom', 'Prenom','Fonction_actuelle')
@@ -112,4 +116,5 @@ class Personnel extends Model
             ->get();
         }
     }
+
 }
