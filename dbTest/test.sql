@@ -1,3 +1,25 @@
+select COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA 
+from `facture` 
+    inner join `detailvente` on `detailvente`.`Facture` = `facture`.`id` 
+    inner join `prix` on `detailvente`.`ID_prix` = `prix`.`Id` 
+    inner join `produit` on `produit`.`Code_produit` = `prix`.`Code_produit` 
+    inner join `mission` on `mission`.`Id_de_la_mission` like `facture`.`Id_de_la_mission` 
+where `facture`.`Matricule_personnel` like 'VP00080'
+and `Produit`.`Designation` like 'BE NICE FEMININE CLEANSING GOLD'
+
+select
+    `Produit`.`Designation`,(detailvente.Quantite * prix.Prix_detail) as prix
+    from `facture`
+    inner join `detailvente` on `detailvente`.`Facture` = `facture`.`id`
+    inner join `prix` on `detailvente`.`ID_prix` = `prix`.`Id`
+    inner join `produit` on `produit`.`Code_produit` = `prix`.`Code_produit`
+    inner join `mission` on `mission`.`Id_de_la_mission` like `facture`.`Id_de_la_mission`
+where `facture`.`Matricule_personnel` like 'VP00080'
+and `Produit`.`Designation` = 'BE NICE FEMININE CLEANSING GOLD'
+;
+
+
+
 SELECT
     sum(dv.Quantite * pr.Prix_detail) as prix
 FROM 

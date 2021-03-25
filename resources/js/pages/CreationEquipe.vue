@@ -122,6 +122,12 @@ export default {
             classements: [],
         }
     },
+    beforeRouteEnter(to, from, next) {
+        if (!window.Laravel.isLoggedin) {
+            window.location.href = "/login";
+        }
+        next();
+    },
     created() {
 
     },
@@ -235,12 +241,7 @@ export default {
             alert("test ok");
         },
     },
-    beforeRouteEnter(to, from, next) {
-        if (!window.Laravel.isLoggedin) {
-            window.location.href = "/login";
-        }
-        next();
-    },
+    
     components: {
         EquipeTab,
         SearchPersonnel,

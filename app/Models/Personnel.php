@@ -12,9 +12,8 @@ use App\Models\Facture;
 class Personnel extends Model
 {
     use HasFactory,Notifiable;
-    const DEFAULT_MAX_RESULT = 10;
-
-    private static $DAY_INTERVAL = 190;
+    public static $DEFAULT_MAX_RESULT = 10;
+    public static $DAY_INTERVAL = 190;
     protected $table = 'personnel';
     protected $primaryKey = 'Matricule';
     public $incrementing = false;
@@ -50,8 +49,89 @@ class Personnel extends Model
         'statut',
     ];
 
-    public static function getCAByProduit($idProduit){
-        
+    public static $COLUMN_TYPE_MISSION = [
+        "local"=>"LOCAL",
+        "mission"=>"MISSION"
+    ];
+
+    public function getCAGlobal(){
+        $nbrJour=self::$DAY_INTERVAL;
+        $interval = getDateInterval($nbrJour);
+        $facture = DB::table('facture')
+        ->where('facture.Matricule_personnel','like',$this->Matricule)
+        ->whereBetween('facture.Date', [$interval->firstDate,$interval->lastDate])
+        ->select(DB::raw('COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA'))
+        ->join('detailvente', 'detailvente.Facture', '=', 'facture.id')
+        ->join('prix', 'detailvente.ID_prix', '=', 'prix.Id')
+        ->first();
+        $CAGlobal = 0;
+        if($facture->CA){
+            $CAGlobal = $facture->CA;
+        }
+        return $CAGlobal;
+    }
+
+    public function getCAMission(){
+        $nbrJour=self::$DAY_INTERVAL;
+        $interval = getDateInterval($nbrJour);
+        $facture = DB::table('facture')
+        ->where('facture.Matricule_personnel','like',$this->Matricule)
+        ->where('mission.Type_de_mission','like',self::$COLUMN_TYPE_MISSION['mission'])
+        ->whereBetween('facture.Date', [$interval->firstDate,$interval->lastDate])
+        ->select(DB::raw('COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA'))
+        ->join('detailvente', 'detailvente.Facture', '=', 'facture.id')
+        ->join('prix', 'detailvente.ID_prix', '=', 'prix.Id')
+        ->join('mission','mission.Id_de_la_mission','like','facture.Id_de_la_mission')
+        ->first();
+        $CAMission = 0;
+        if($facture->CA){
+            $CAMission = $facture->CA;
+        }
+        return $CAMission;
+    }
+
+    public function getCAselonProduit($Produit){
+        if(isset($Produit)){
+            $nbrJour=self::$DAY_INTERVAL;
+            $interval = getDateInterval($nbrJour);
+            $facture = DB::table('facture')
+            ->where('facture.Matricule_personnel','like',$this->Matricule)
+            ->whereBetween('facture.Date', [$interval->firstDate,$interval->lastDate])
+            ->where('Produit.Code_produit','=',$Produit)
+            ->select(DB::raw('COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA'))
+            ->join('detailvente', 'detailvente.Facture', '=', 'facture.id')
+            ->join('prix', 'detailvente.ID_prix', '=', 'prix.Id')
+            ->join('produit', 'produit.Code_produit', '=', 'prix.Code_produit')
+            ->join('mission','mission.Id_de_la_mission','like','facture.Id_de_la_mission')
+            ->first();
+            $CAMission = 0;
+            if($facture->CA){
+                $CAMission = $facture->CA;
+            }
+            return $CAMission;
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public function getCALocal(){
+        $nbrJour=self::$DAY_INTERVAL;
+        $interval = getDateInterval($nbrJour);
+        $facture = DB::table('facture')
+        ->where('facture.Matricule_personnel','like',$this->Matricule)
+        ->whereBetween('facture.Date', [$interval->firstDate,$interval->lastDate])
+        ->where('mission.Type_de_mission','like',self::$COLUMN_TYPE_MISSION['local'])
+        ->select(DB::raw('COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA'))
+        ->join('detailvente', 'detailvente.Facture', '=', 'facture.id')
+        ->join('prix', 'detailvente.ID_prix', '=', 'prix.Id')
+        ->join('mission','mission.Id_de_la_mission','like','facture.Id_de_la_mission')
+        ->first();
+        $CAMission = 0;
+        if($facture->CA){
+            $CAMission = $facture->CA;
+        }
+        return $CAMission;
     }
 
     static function getFirstWithCA($conditions){
@@ -59,11 +139,10 @@ class Personnel extends Model
         ->select('Matricule', 'Nom', 'Prenom','Fonction_actuelle')
         ->first();
         if($personnel){
-            $date = date("Y-m-d");
-            $first_date = date('Y-m-d', strtotime($date.' - '.self::$DAY_INTERVAL.' days'));
+            $interval = getDateInterval(self::$DAY_INTERVAL);
             $facture = DB::table('facture')
             ->where('facture.Matricule_personnel','like',$personnel->Matricule)
-            ->whereBetween('facture.Date', [$first_date, $date])
+            ->whereBetween('facture.Date', [$interval->firstDate,$interval->lastDate])
             ->select(DB::raw('COALESCE(SUM(detailvente.Quantite * prix.Prix_detail),0) as CA'))
             ->join('detailvente', 'detailvente.Facture', '=', 'facture.id')
             ->join('prix', 'detailvente.ID_prix', '=', 'prix.Id')
@@ -104,7 +183,8 @@ class Personnel extends Model
         }
     }
     
-    public static function getMatricules($conditions = [],$nbrOfResult = self::DEFAULT_MAX_RESULT){
+    public static function getMatricules($conditions = []){
+        $nbrOfResult = self::$DEFAULT_MAX_RESULT;
         if($nbrOfResult == 'all'){
             return self::select('Matricule')
             ->where($conditions)

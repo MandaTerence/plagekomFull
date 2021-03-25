@@ -8,6 +8,7 @@ use App\Models\DetailMission;
 use Illuminate\Http\Request;
 use App\Helpers\ControllerHelper;
 use Illuminate\Support\Facades\DB;
+use App\Services\ClassementService;
 
 class PersonnelController extends Controller
 {
@@ -28,8 +29,30 @@ class PersonnelController extends Controller
     }
 
     public function getClassement(Request $request){
+        $classementGlobal = [];
+        $classementLocal = [];
+        $classementMission = [];
+        if(isset($request->Matricules)){
+            $classementGlobal = ClassementService::getClassementGlobal($request->Matricules);
+            $classementLocal = ClassementService::getClassementLocal($request->Matricules);
+            $classementMission = ClassementService::getClassementMission($request->Matricules);
+        }
+
+        $success = true;
+        $message = 'resultat trouvé';
+
+        $response = [
+            'success' => $success,
+            'message' => $message,
+            'classementGlobal' =>$classementGlobal,
+            'classementLocal' =>$classementLocal,
+            'classementMission' =>$classementMission
+        ];
+        return $response;
+    }
+
+    public function getClassementsss(Request $request){
         $personnels = [];
-        $test = '';
         if(isset($request->Matricules)){
             $donnee = $request->Matricules;
             foreach($donnee as $m){
@@ -49,7 +72,7 @@ class PersonnelController extends Controller
         if(isset($request->Matricules)){
             $response = [
                 'success' => true,
-                'message' => 'resultat trouvé'.$test,
+                'message' => 'resultat trouvé',
                 'personnels' => $personnels,
             ];
             return response()->json($response);
@@ -74,10 +97,20 @@ class PersonnelController extends Controller
             }
         }
         $personnel = Personnel::getFirstWithCA($conditions);
+        $testCA = 0;
+        $testCAB = 0;
+        if(isset($personnel)){
+            $testCA = $personnel->getCAselonProduit('SYSTEMA TOOTHPASTE CHARCOAL');
+            $testCAB = $personnel->getCAMission();
+            $testCAC = $personnel->getCALocal();
+        }
         if($personnel){
             $response = [
                 'success' => true,
                 'message' => 'resultat trouvé',
+                'CA produit' => $testCA,
+                'CA Mission' => $testCAB,
+                'CA local' => $testCAC,
                 'personnel' => $personnel,
             ];
             return response()->json($response);

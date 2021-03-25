@@ -63,14 +63,27 @@ export default {
             this.produitDesignation = designation;
         },
         addProduit(){
-            axios.get('/api/produits/getFirst',{params: {criteres: {Designation: this.produitDesignation}}}).then(response => {
-                if(response.data.success){
-                    this.produits.push(response.data.produit);
+            let produitExist = false;
+            for(let i=0;i<this.produits.length;i++){
+                if(this.produits[i].Designation == this.produitDesignation){
+                    produitExist = true;
+                    break;
                 }
-                else{
-                    alert('aucun resultat trouvé');
-                }
-            });
+            }
+            if(!produitExist){
+                axios.get('/api/produits/getFirst',{params: {criteres: {Designation: this.produitDesignation}}}).then(response => {
+                    if(response.data.success){
+                        this.produits.push(response.data.produit);
+                    }
+                    else{
+                        alert('aucun resultat trouvé');
+                    }
+                });
+            }
+            else{
+                alert('ce produit a deja etait ajouter');
+            }
+            
         }
     }
 }

@@ -53,14 +53,16 @@ class Produit extends Model
     }
 
     public static function getAllDesignationLimited($conditions=[],$nbrResult=self::DEFAULT_MAX_RESULT){
-        return self::select('Designation')
+        return self::select('produit.Designation')
         ->where($conditions)
         ->take($nbrResult)
         ->get();
     }
 
     public static function getFirstWhere($conditions=[]){
-        return self::where($conditions)
+        return self::join('prix', 'prix.Code_produit', '=', 'produit.Code_produit')
+        ->select('produit.Designation','prix.Prix_detail as prix')
+        ->where($conditions)
         ->first();
     }
 }
