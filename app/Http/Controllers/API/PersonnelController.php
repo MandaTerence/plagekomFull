@@ -32,10 +32,21 @@ class PersonnelController extends Controller
         $classementGlobal = [];
         $classementLocal = [];
         $classementMission = [];
+        $classementProduits = [];
         if(isset($request->Matricules)){
             $classementGlobal = ClassementService::getClassementGlobal($request->Matricules);
             $classementLocal = ClassementService::getClassementLocal($request->Matricules);
             $classementMission = ClassementService::getClassementMission($request->Matricules);
+        }
+
+        if(isset($request->Produits)){
+            foreach($request->Produits as $produit){
+                $classementProduits[] =
+                [
+                    "produit" => $produit,
+                    "classement" => ClassementService::getClassementProduit($request->Matricules,$produit)
+                ];
+            }
         }
 
         $success = true;
@@ -46,8 +57,10 @@ class PersonnelController extends Controller
             'message' => $message,
             'classementGlobal' =>$classementGlobal,
             'classementLocal' =>$classementLocal,
-            'classementMission' =>$classementMission
+            'classementMission' =>$classementMission,
+            'classementProduit' =>$classementProduits
         ];
+        
         return $response;
     }
 

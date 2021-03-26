@@ -1,4 +1,5 @@
 <template>
+    <button v-on:click="test">test</button>
     <SearchProduit v-model:produits="produits"/>
     <ProduitTab v-model:produits="produits"/>
     <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs"/>
@@ -194,10 +195,18 @@ export default {
             }
             return matricules;
         },
+        getCodeProduitFromArray(produits){
+            let codeProduits = [];
+            for(let i=0;i<produits.length;i++){
+                codeProduits.push(produits[i]['Code_produit']);
+            }
+            return codeProduits;
+        },
         getClassement(){
-            let mat = this.getMatriculeFromArray(this.commerciaux);
+            let matricules = this.getMatriculeFromArray(this.commerciaux);
+            let produits =  this.getCodeProduitFromArray(this.produits);
             this.classements.splice(0,this.classements.length);
-            axios.get('/api/personnels/getClassement',{params: {Matricules: mat}}).then(response => { 
+            axios.get('/api/personnels/getClassement',{params: {Matricules: matricules,Produits: produits}}).then(response => { 
                 if(response.data.personnels!=null){
                     for(let i=0;i<response.data.personnels.length;i++){
                         let perso = response.data.personnels[i];
@@ -238,7 +247,8 @@ export default {
             this.$router.push({ name: 'planning', query: { idMission: idMission ,coach: coach} });
         },
         test(){
-            alert("test ok");
+            let te =  this.getCodeProduitFromArray(this.produits);
+            alert(te);
         },
     },
     

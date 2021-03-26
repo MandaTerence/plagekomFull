@@ -1,11 +1,7 @@
 <template>
         <div class="row">
             <div class="col-6">
-                <h4>{{ titre }}</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
+                <h4>{{ titre }} +14.000 Ar</h4>
                 <table class="table table-hover">
                     <thead >
                         <tr class="bg-primary" style="color:white">
@@ -15,14 +11,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="produit in produits" v-bind:key="produit">
+                        <tr v-for="produit in produitsCher" v-bind:key="produit">
                             <td scope="col-md-2">{{ produit.Designation }}</td>
                             <td scope="col-md-2">{{ produit.prix }}</td>
                             <td scope="col-md-1">
                                 <button class="btn btn-danger" v-on:click="remove(produit.Designation)">
                                 <div class="d-none d-lg-block">
                                     supprimer
-                                </diV>
+                                </div>
                                 <div class="d-block d-lg-none">
                                     X
                                 </div>
@@ -33,6 +29,7 @@
                 </table>
             </div>
             <div class="col-6">
+                <h4>{{ titre }} -14.000 Ar</h4>
                 <table class="table table-hover">
                     <thead >
                         <tr class="bg-primary" style="color:white">
@@ -42,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="produit in produits" v-bind:key="produit">
+                        <tr v-for="produit in produitsMoinCher" v-bind:key="produit">
                             <td scope="col-md-2">{{ produit.Designation }}</td>
                             <td scope="col-md-2">{{ produit.prix }}</td>
                             <td scope="col-md-1">
@@ -74,6 +71,14 @@ export default {
             type: String,
             default: 'Produits'
         }
+    },
+    computed:{
+        produitsCher: function () {
+            return this.produits.filter(p => p.prix >=14000)
+        },
+        produitsMoinCher: function () {
+            return this.produits.filter(p => p.prix <14000)
+        },
     },
     created() {
       

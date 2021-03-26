@@ -61,7 +61,7 @@ class Produit extends Model
 
     public static function getFirstWhere($conditions=[]){
         return self::join('prix', 'prix.Code_produit', '=', 'produit.Code_produit')
-        ->select('produit.Designation','prix.Prix_detail as prix')
+        ->select('produit.Designation','produit.Code_produit','prix.Prix_detail as prix')
         ->where($conditions)
         ->first();
     }

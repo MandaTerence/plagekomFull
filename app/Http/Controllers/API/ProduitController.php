@@ -67,7 +67,7 @@ class ProduitController extends Controller
                 'produit'=> $produit,
             ];
             return $response;
-        } 
+        }
         catch (\Illuminate\Database\QueryException $exception) {
             $response = 
             [

@@ -7,6 +7,8 @@ from `facture`
 where `facture`.`Matricule_personnel` like 'VP00080'
 and `Produit`.`Designation` like 'BE NICE FEMININE CLEANSING GOLD'
 
+select ''
+
 select
     `Produit`.`Designation`,(detailvente.Quantite * prix.Prix_detail) as prix
     from `facture`
@@ -15,7 +17,6 @@ select
     inner join `produit` on `produit`.`Code_produit` = `prix`.`Code_produit`
     inner join `mission` on `mission`.`Id_de_la_mission` like `facture`.`Id_de_la_mission`
 where `facture`.`Matricule_personnel` like 'VP00080'
-and `Produit`.`Designation` = 'BE NICE FEMININE CLEANSING GOLD'
 ;
 
 

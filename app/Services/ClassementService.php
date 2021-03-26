@@ -71,4 +71,13 @@ class ClassementService {
         return $personnels;
     }
 
+    public static function getClassementProduit($matricules,$produit){
+        $personnels = PersonnelService::getPersonnelsCAProduit($matricules,$produit);
+        usort($personnels,'static::compareCAProduit');
+        for($i=0;$i<count($personnels);$i++){
+            $personnels[$i]->place = $i+1;
+        }
+        return $personnels;
+    }
+
 }
