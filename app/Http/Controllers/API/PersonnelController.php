@@ -9,10 +9,20 @@ use Illuminate\Http\Request;
 use App\Helpers\ControllerHelper;
 use Illuminate\Support\Facades\DB;
 use App\Services\ClassementService;
+use App\Services\PersonnelService;
 
 class PersonnelController extends Controller
 {
     const DEFAULT_MAX_RESULT = 10;
+
+    const DEFAULT_COEF = [
+        'global' => 5,
+        'local' => 2,
+        'mission' => 1,
+        'produitPlusCher' => 1,
+        'produitMoinsCher' => 1,
+        'produit' => []
+    ];
 
     public function index(Request $request){
         $personnels = Personnel::where(ControllerHelper::getConditions($request))
@@ -29,6 +39,47 @@ class PersonnelController extends Controller
     }
 
     public function getClassement(Request $request){
+        $personnels = [];
+        if(isset($request->Matricules)){
+            $personnels = PersonnelService::getPersonnelFromMatricule($request->Matricules);
+        }
+        foreach($personnels as $personnel){
+            if(isset($request->Produits)){
+                $personnel->getAllCA($request->Produits);
+            }
+            else{
+                $personnel->getAllCA();
+            }
+        }
+        $classementTotal = ClassementService::getClassementTotal($personnels,self::DEFAULT_COEF);
+        $classementGlobal = ClassementService::getClassementGlobal($personnels);
+        $classementLocal = ClassementService::getClassementLocal($personnels);
+        $classementMission = ClassementService::getClassementMission($personnels);
+        $classementProduitMoinsCher = ClassementService::getClassementProduitMoinsCher($personnels);
+        $classementProduitPlusCher = ClassementService::getClassementProduitPlusCher($personnels);
+        //$classementProduits = ClassementService::getClassementProduits($personnels);
+
+        $success = true;
+        $message = 'resultat trouvé';
+
+        $response = [
+            'success' => $success,
+            'personnels' => $personnels,
+            'classements'=> [
+                'classementTotal' => $classementTotal,
+                'classementGlobal' =>$classementGlobal,
+                'classementLocal' =>$classementLocal,
+                'classementMission' =>$classementMission,
+                'classementProduitMoinsCher' =>$classementProduitMoinsCher,
+                'classementProduitPlusCher' =>$classementProduitPlusCher
+            ]
+            //'classementProduit' =>$classementProduits
+        ];
+        
+        return $response;
+    }
+
+    public function getClassementOld(Request $request){
         $classementGlobal = [];
         $classementLocal = [];
         $classementMission = [];

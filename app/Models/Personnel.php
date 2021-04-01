@@ -4,16 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Facture;
+use App\Models\Produit;
 
 class Personnel extends Model
 {
+
     use HasFactory,Notifiable;
     public static $DEFAULT_MAX_RESULT = 10;
     public static $DAY_INTERVAL = 190;
+    const PRIX_CHER = 190;
     protected $table = 'personnel';
     protected $primaryKey = 'Matricule';
     public $incrementing = false;
@@ -54,6 +58,32 @@ class Personnel extends Model
         "mission"=>"MISSION"
     ];
 
+    public function getAllCA($produits = []){
+        $this->CAGlobal=$this->getCAGlobal();
+        $this->CAMission=$this->getCAMission();
+        $this->CALocal=$this->getCALocal();
+        $produitFinaux = [];
+        $CAProduitMoinsCher = 0;
+        $CAProduitPlusCher = 0;
+        foreach($produits as $produit){
+            $CAProduit = $this->getCAselonProduit($produit);
+            $produitFinaux[] = [
+                "Code_roduit" =>$produit,
+                "CAProduit" => $CAProduit
+            ];
+            $pr = Produit::getFirstWhere([['produit.Code_produit',$produit]]);
+            if($pr->prix<self::PRIX_CHER){
+                $CAProduitMoinsCher += $CAProduit;
+            }
+            else{
+                $CAProduitPlusCher += $CAProduit;
+            }
+        }
+        $this->CAProduitMoinsCher = $CAProduitMoinsCher;
+        $this->CAProduitPlusCher = $CAProduitPlusCher;
+        $this->CAProduit= $produitFinaux;
+    }
+
     public function getCAGlobal(){
         $nbrJour=self::$DAY_INTERVAL;
         $interval = getDateInterval($nbrJour);
@@ -88,6 +118,17 @@ class Personnel extends Model
             $CAMission = $facture->CA;
         }
         return $CAMission;
+    }
+
+    public function getCATotal($coef){
+        $this->CATotal = 
+            ($this->CAGlobal*$coef['global'])
+            +($this->CAMission*$coef['mission'])
+            +($this->CALocal*$coef['local'])
+            +($this->CAProduitPlusCher*$coef['produitPlusCher'])
+            +($this->CAProduitMoinsCher*$coef['produitMoinsCher'])
+        ;
+        return $this->CATotal;
     }
 
     public function getCAselonProduit($Produit){
