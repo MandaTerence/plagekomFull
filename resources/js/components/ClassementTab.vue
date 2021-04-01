@@ -1,6 +1,6 @@
 <template>
     <div class="form-row">
-    </div>  
+    </div>
 </template>
 
 <script>

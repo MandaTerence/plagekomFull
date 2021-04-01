@@ -9,7 +9,6 @@ use App\Models\Accompagnement;
 
 class EquipeController extends Controller
 {
-
     public function create(Request $request,EquipeService $equipeService){
         $matriculesCommerciaux = $request->matriculesCommerciaux;
         $matriculeCoatch = $request->coatch;
@@ -18,5 +17,4 @@ class EquipeController extends Controller
             Accompagnement::createEquipe($matriculeCoatch,$matriculesCommerciaux,$IdMission);
         }   
     }
-
 }

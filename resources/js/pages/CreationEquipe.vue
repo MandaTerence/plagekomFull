@@ -5,8 +5,7 @@
     <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs"/>
     <EquipeTab v-model:equipes="coachs" titre="Coachs"/>
     <EquipeTab v-model:equipes="commerciaux" titre="Commerciaux"/>
-
-    <div class="row">
+    <div class="row" >
         <div class="col-12 text-right">
             <button class="btn btn-primary" v-on:click="getClassement">lancer le classement</button>
         </div>
