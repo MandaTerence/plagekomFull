@@ -65,13 +65,14 @@ class PersonnelController extends Controller
         $response = [
             'success' => $success,
             'personnels' => $personnels,
+            'classementsReel' => $classementTotal,
             'classements'=> [
-                'classementTotal' => $classementTotal,
-                'classementGlobal' =>$classementGlobal,
-                'classementLocal' =>$classementLocal,
-                'classementMission' =>$classementMission,
-                'classementProduitMoinsCher' =>$classementProduitMoinsCher,
-                'classementProduitPlusCher' =>$classementProduitPlusCher
+                //["titre"=>"classementTotal","classement"=>$classementTotal],
+                ["titre"=>"classementGlobal","classement"=>$classementGlobal],
+                ["titre"=>"classementLocal","classement"=>$classementLocal],
+                ["titre"=>"classementMission","classement"=>$classementMission],
+                ["titre"=>"classementProduitMoinsCher","classement"=>$classementProduitMoinsCher],
+                ["titre"=>"classementProduitPlusCher","classement"=>$classementProduitPlusCher]
             ]
             //'classementProduit' =>$classementProduits
         ];

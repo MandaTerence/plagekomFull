@@ -76,7 +76,8 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
                 "CA"=>$personnels[$i]->CATotal
             ];
@@ -91,9 +92,10 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CAGlobal
+                "CA"=>$personnels[$i]->CATotal
             ];
         }
         return $personnelsFinal;
@@ -106,9 +108,10 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CALocal
+                "CA"=>$personnels[$i]->CATotal
             ];
         }
         return $personnelsFinal;
@@ -121,9 +124,10 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CAProduitPlusCher
+                "CA"=>$personnels[$i]->CATotal
             ];
         }
         return $personnelsFinal;
@@ -136,9 +140,10 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CAProduitMoinsCher
+                "CA"=>$personnels[$i]->CATotal
             ];
         }
         return $personnelsFinal;
@@ -151,9 +156,10 @@ class ClassementService {
         for($i=0;$i<count($personnels);$i++){
             $personnels[$i]->place = $i+1;
             $personnelsFinal[] = [
-                "Personnel"=>$personnels[$i]->Matricule,
+                "Matricule"=>$personnels[$i]->Matricule,
+                "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CAMission
+                "CA"=>$personnels[$i]->CATotal
             ];
         }
         return $personnelsFinal;

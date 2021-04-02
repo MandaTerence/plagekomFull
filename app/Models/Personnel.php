@@ -58,6 +58,15 @@ class Personnel extends Model
         "mission"=>"MISSION"
     ];
 
+    public function getNomFromMAtricule(){
+        $result = self::select('Nom','Prenom')
+        ->where('Matricule','like',$this->Matricule)
+        ->first();
+        $this->Nom = $result->Nom;
+        $this->Prenom = $result->Prenom;
+        return $this->Nom.' '.$this->Prenom;
+    }
+
     public function getAllCA($produits = []){
         $this->CAGlobal=$this->getCAGlobal();
         $this->CAMission=$this->getCAMission();

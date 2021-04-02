@@ -14,7 +14,7 @@
     </div> 
 
     <div v-if="showClassements">
-        <s/>
+        <ClassementTab v-model:classements="classements"/>
         <button class="btn btn-primary" v-on:click="toogleClassementsView()">retour </button>
         
         <div name="modal" v-if="showModal" @close="showModal = false">
@@ -100,6 +100,7 @@ import EquipeTab from "../components/EquipeTab";
 import SearchPersonnel from "../components/SearchPersonnel";
 import SearchProduit from "../components/SearchProduit";
 import ProduitTab from "../components/ProduitTab";
+import ClassementTab from "../components/ClassementTab";
 
 export default {
     name: "CreationEquipe",
@@ -218,7 +219,7 @@ export default {
             this.classements.splice(0,this.classements.length);
             axios.get('/api/personnels/getClassement',{params: {Matricules: matricules,Produits: produits}}).then(response => { 
                 if(response.data.personnels!=null){
-                    this.classements = response.data.Classements;
+                    this.classements = response.data.classements;
                     this.toogleClassementsView();
                     /*for(let i=0;i<response.data.personnels.length;i++){
                         let perso = response.data.personnels[i];
@@ -267,7 +268,8 @@ export default {
         EquipeTab,
         SearchPersonnel,
         SearchProduit,
-        ProduitTab
+        ProduitTab,
+        ClassementTab
     }
 }
 </script>

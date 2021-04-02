@@ -13,6 +13,7 @@ class PersonnelService {
         foreach($matricules as $matricule){
             $personnel = new Personnel;
             $personnel->Matricule = $matricule;
+            $personnel->getNomFromMAtricule();
             $personnels[] = $personnel;
         }
         return $personnels;
