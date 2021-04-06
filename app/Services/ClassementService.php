@@ -95,7 +95,7 @@ class ClassementService {
                 "Matricule"=>$personnels[$i]->Matricule,
                 "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CATotal
+                "CA"=>$personnels[$i]->CAGlobal
             ];
         }
         return $personnelsFinal;
@@ -111,7 +111,7 @@ class ClassementService {
                 "Matricule"=>$personnels[$i]->Matricule,
                 "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CATotal
+                "CA"=>$personnels[$i]->CALocal
             ];
         }
         return $personnelsFinal;
@@ -127,7 +127,7 @@ class ClassementService {
                 "Matricule"=>$personnels[$i]->Matricule,
                 "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CATotal
+                "CA"=>$personnels[$i]->CAProduitPlusCher
             ];
         }
         return $personnelsFinal;
@@ -143,7 +143,7 @@ class ClassementService {
                 "Matricule"=>$personnels[$i]->Matricule,
                 "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CATotal
+                "CA"=>$personnels[$i]->CAProduitMoinsCher
             ];
         }
         return $personnelsFinal;
@@ -159,7 +159,7 @@ class ClassementService {
                 "Matricule"=>$personnels[$i]->Matricule,
                 "Nom"=>$personnels[$i]->Nom."".$personnels[$i]->Prenom,
                 "place"=>$personnels[$i]->place,
-                "CA"=>$personnels[$i]->CATotal
+                "CA"=>$personnels[$i]->CAMission
             ];
         }
         return $personnelsFinal;

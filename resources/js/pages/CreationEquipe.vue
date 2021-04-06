@@ -1,9 +1,14 @@
 <template>
     <div v-if="!showClassements">
-        <button v-on:click="test">test</button>
         <SearchProduit v-model:produits="produits"/>
         <ProduitTab v-model:produits="produits"/>
-        <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs"/>
+        <div class="form-group col-md-4">
+            <label for="inputMission">Mission</label>
+            <select class="form-control" id="inputMission" v-model="idMission">
+                <option v-bind:key="mission.Id_de_la_mission" v-bind:value="mission.Id_de_la_mission" v-for="mission in missions">{{ mission.Id_de_la_mission }}</option>
+            </select>
+        </div>
+        <SearchPersonnel v-model:commerciaux="commerciaux" v-model:coachs="coachs" v-model:idMission="idMission"/>
         <EquipeTab v-model:equipes="coachs" titre="Coachs"/>
         <EquipeTab v-model:equipes="commerciaux" titre="Commerciaux"/>
         <div class="row" >
@@ -14,9 +19,9 @@
     </div> 
 
     <div v-if="showClassements">
-        <ClassementTab v-model:classements="classements"/>
+        <ClassementTab v-model:classements="classements" v-model:classementReel="classementReel"/>
         <button class="btn btn-primary" v-on:click="toogleClassementsView()">retour </button>
-        
+        <button class="btn btn-primary" v-on:click="validateEquipe">Valider</button>
         <div name="modal" v-if="showModal" @close="showModal = false">
             <div class="modal-mask">
                 <div class="modal-wrapper">
@@ -122,13 +127,14 @@ export default {
             produits: [],
 
             idFonction: null,
-            idMission: null,
+            idMission: "n",
             idProduit: null,
 
             customId: null,
 
             resultats: [],
             classements: [],
+            classementReel: []
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -138,10 +144,24 @@ export default {
         next();
     },
     created() {
-
+        this.loadMissions();
     },
     methods: {
-        
+        loadMissions(){
+            this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
+            .then(response => {
+                if(response.data.success){
+                    this.missions = response.data.missions;
+                    this.idMission = this.missions[0].Id_de_la_mission;
+                }
+                else{
+                    console.log(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+        },
         fonctionOnChange(){
             this.resultats = [];
             this.matricule = '';
@@ -180,10 +200,10 @@ export default {
                 alert("il manque "+(this.maxCommerciaux-this.commerciaux.length)+" commerciaux");
             }
             else{
-                axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classements),idMission:this.idMission}).then(response => {
+                axios.post('/api/classements/',{matriculeCoach: this.coachs[0].Matricule,matriculeCommerciaux: this.getMatriculeAndPlaceFromArray(this.classementReel),idMission:this.idMission}).then(response => {
                     if(response.data.success){
                         this.showModal = false;
-                        this.testRouter(this.idMission,this.coachs[0].Matricule);
+                        this.$router.push({ name: 'planning', query: { idMission: this.idMission ,coach: this.coach} });
                     }
                     else if(!response.data.success){
                         alert('insertion echoué');
@@ -220,14 +240,8 @@ export default {
             axios.get('/api/personnels/getClassement',{params: {Matricules: matricules,Produits: produits}}).then(response => { 
                 if(response.data.personnels!=null){
                     this.classements = response.data.classements;
+                    this.classementReel = response.data.classementsReel;
                     this.toogleClassementsView();
-                    /*for(let i=0;i<response.data.personnels.length;i++){
-                        let perso = response.data.personnels[i];
-                        perso.placeTemp = response.data.personnels[i].place;
-                        perso.placeOriginal = response.data.personnels[i].place;
-                        this.classements.push(perso);
-                    }
-                    this.showModal = true;*/
                 }
             });
         },
@@ -255,12 +269,10 @@ export default {
             }
             
         },
-        testRouter(idMission,coach){
-            this.$router.push({ name: 'planning', query: { idMission: idMission ,coach: coach} });
-        },
         test(){
-            let te =  this.getCodeProduitFromArray(this.produits);
-            alert(te);
+            alert(this.idMission);
+            //let te =  this.getCodeProduitFromArray(this.produits);
+            //alert(te);
         },
     },
     

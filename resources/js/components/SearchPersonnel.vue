@@ -1,11 +1,6 @@
 <template>
     <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="inputMission">Mission</label>
-            <select class="form-control" id="inputMission" v-model="idMission" >
-                <option v-bind:key="mission.Id_de_la_mission" v-bind:value="mission.Id_de_la_mission" v-for="mission in missions">{{ mission.Id_de_la_mission }}</option>
-            </select>
-        </div>
+        
         <div class="form-group col-md-4">
             <label for="inputFonction">Fonction</label>
             <select class="form-control" id="inputFonction" v-model="idFonction" v-on:change="changeCustomId">
@@ -37,15 +32,17 @@ export default {
         return {
             matricule: '',
             fonctions: [],
-            missions: [],
             resultats: [],
             idFonction: null,
-            idMission: null,
             isSearchingAutoComplete: false,
             customId: null,
         }
     },
     props: {
+        idMission:{
+            type: String,
+            required: true
+        },
         commerciaux: {
             type: Array,
             required: true
@@ -65,7 +62,6 @@ export default {
     },
     created() {
         this.loadFonctions();
-        this.loadMissions();
     },
     methods: {
         loadFonctions(){
@@ -75,21 +71,6 @@ export default {
                     this.fonctions = response.data.fonctions;
                     this.idFonction = this.fonctions[0].id;
                     this.customId = this.fonctions[0].customId;
-                }
-                else{
-                    console.log(response.data.message);
-                }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-        },
-        loadMissions(){
-            this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
-            .then(response => {
-                if(response.data.success){
-                    this.missions = response.data.missions;
-                    this.idMission = this.missions[0].Id_de_la_mission;
                 }
                 else{
                     console.log(response.data.message);

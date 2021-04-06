@@ -17,12 +17,13 @@ class ClassementController extends Controller
         $idMission = $request->input('idMission');
         $success = Classement::saveFromCommerciaux($idMission,$commerciaux); 
         if($success){
-            $mess = AccompagnementService::generatePlanning($idMission,$coach,$commerciaux);
+            $test = AccompagnementService::generatePlanning($idMission,$coach,$commerciaux);
         }
         $response = [
             'success' => $success,
+            'test' => $test
         ];
-        return response()->json($response);
+        return $response;
     }
 
     public function getPlanning(Request $request){

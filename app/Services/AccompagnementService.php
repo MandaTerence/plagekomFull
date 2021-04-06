@@ -74,10 +74,10 @@ class AccompagnementService {
             }
         }
         $classement = Classement::getFromMatricules($idMission,$matricules);
-        $mission = Mission::getFirst([['Id_de_la_mission','like',$idMission]]);
+        $mission = Mission::getFirst([['Id_de_la_mission',$idMission]]);
         $Date_depart = $mission->Date_depart;
         $Date_de_fin = $mission->Date_de_fin;
-        $periods = self::date_range($Date_depart, $Date_de_fin);
+        $periods = self::date_range($Date_depart,$Date_de_fin);
         $accArray = [];
         foreach($periods as $period){
             $p = str_replace('/', '-', $period);
