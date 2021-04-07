@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="form-group col-md-4">
-            <button class="d-none d-lg-block btn btn-primary " style="margin:30px" v-on:click="addProduit">Ajouter</button>
+            <button class="d-none d-lg-block btn btn-secondary " style="margin:30px" v-on:click="addProduit">Ajouter</button>
         </div>
     </div>
 </template>

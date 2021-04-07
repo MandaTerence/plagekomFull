@@ -1,62 +1,34 @@
 <template>
-        <div class="row">
-            <div class="col-6">
-                <h4>{{ titre }} +14.000 Ar</h4>
-                <table class="table table-hover">
-                    <thead >
-                        <tr class="bg-primary" style="color:white">
-                            <th scope="col-md-2">Designation</th>
-                            <th scope="col-md-2 d-none">prix</th>
-                            <th scope="col-md-1"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="produit in produitsCher" v-bind:key="produit">
-                            <td scope="col-md-2">{{ produit.Designation }}</td>
-                            <td scope="col-md-2">{{ produit.prix }}</td>
-                            <td scope="col-md-1">
-                                <button class="btn btn-danger" v-on:click="remove(produit.Designation)">
-                                <div class="d-none d-lg-block">
-                                    supprimer
-                                </div>
-                                <div class="d-block d-lg-none">
-                                    X
-                                </div>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-6">
-                <h4>{{ titre }} -14.000 Ar</h4>
-                <table class="table table-hover">
-                    <thead >
-                        <tr class="bg-primary" style="color:white">
-                            <th scope="col-md-2">Designation</th>
-                            <th scope="col-md-2 d-none">prix</th>
-                            <th scope="col-md-1"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="produit in produitsMoinCher" v-bind:key="produit">
-                            <td scope="col-md-2">{{ produit.Designation }}</td>
-                            <td scope="col-md-2">{{ produit.prix }}</td>
-                            <td scope="col-md-1">
-                                <button class="btn btn-danger" v-on:click="remove(produit.Designation)">
-                                <div class="d-none d-lg-block">
-                                    supprimer
-                                </diV>
-                                <div class="d-block d-lg-none">
-                                    X
-                                </div>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="row">
+        <div class="col-6">
+            <h4>Produit</h4>
+            <table class="table table-bordered table-head-bg-secondary table-bordered-bd-secondary">
+                <thead>
+                    <tr>
+                        <th scope="col">Designation</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="produit in produits" v-bind:key="produit">
+                        <td scope="col-md-2">{{ produit.Designation }}</td>
+                        <td scope="col-md-2">{{ produit.prix }}</td>
+                        <td scope="col-md-1">
+                            <button class="btn btn-danger" v-on:click="remove(produit.Designation)">
+                            <div class="d-none d-lg-block">
+                                supprimer
+                            </diV>
+                            <div class="d-block d-lg-none">
+                                X
+                            </div>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
 </template>
 
 <script>

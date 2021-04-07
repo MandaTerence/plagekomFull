@@ -3,7 +3,7 @@
         <h1>Classement Reel</h1>
         <table class="table table-hover">
             <thead >
-                <tr class="bg-primary" style="color:white">
+                <tr class="bg-secondary" style="color:white">
                     <th scope="col-md-2">matricule</th>
                     <th scope="col-md-2">nom et prenom</th>
                     <th scope="col-md-2">C.A</th>
@@ -23,7 +23,7 @@
             <h1>{{ classement.titre }}</h1>
             <table class="table table-hover"> 
                 <thead >
-                    <tr class="bg-primary" style="color:white">
+                    <tr class="bg-secondary" style="color:white">
                         <th scope="col-md-2">matricule</th>
                         <th scope="col-md-2">nom et prenom</th>
                         <th scope="col-md-2">C.A</th>

@@ -2,7 +2,7 @@
 <div class="wrapper">
     <div class="main-header">
         <!-- Logo Header -->
-        <div class="logo-header" data-background-color="blue">
+        <div class="logo-header" data-background-color="purple">
             
             <a href="index.html" class="logo">
                 <h1 alt="navbar brand" class="navbar-brand" style="color:white">Plagekom</h1>
@@ -22,7 +22,7 @@
         <!-- End Logo Header -->
 
         <!-- Navbar Header -->
-        <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+        <nav class="navbar navbar-header navbar-expand-lg" data-background-color="purple">
             
             <div class="container-fluid">
                 <div class="collapse" id="search-nav">
@@ -126,7 +126,7 @@
                                 <div class="notif-scroll scrollbar-outer">
                                     <div class="notif-center">
                                         <a href="#">
-                                            <div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
+                                            <div class="notif-icon notif-secondary"> <i class="fa fa-user-plus"></i> </div>
                                             <div class="notif-content">
                                                 <span class="block">
                                                     New user registered
@@ -299,7 +299,7 @@
                         </div>
                     </div>
                 </div>
-                <ul class="nav nav-primary">
+                <ul class="nav nav-secondary">
                     <li class="nav-item">
                         <a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
                             <i class="fas fa-home"></i>

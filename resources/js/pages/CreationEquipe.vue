@@ -1,5 +1,11 @@
 <template>
     <div v-if="!showClassements">
+        <div>
+
+        </div>
+        <div v-bind:class="{ }">
+            
+        </div>
         <SearchProduit v-model:produits="produits"/>
         <ProduitTab v-model:produits="produits"/>
         <div class="form-group col-md-4">
@@ -13,15 +19,14 @@
         <EquipeTab v-model:equipes="commerciaux" titre="Commerciaux"/>
         <div class="row" >
             <div class="col-12 text-right">
-                <button class="btn btn-primary" v-on:click="getClassement">lancer le classement</button>
+                <button class="btn btn-secondary" v-on:click="getClassement">lancer le classement</button>
             </div>
         </div>
     </div> 
-
     <div v-if="showClassements">
         <ClassementTab v-model:classements="classements" v-model:classementReel="classementReel"/>
-        <button class="btn btn-primary" v-on:click="toogleClassementsView()">retour </button>
-        <button class="btn btn-primary" v-on:click="validateEquipe">Valider</button>
+        <button class="btn btn-secondary" v-on:click="toogleClassementsView()">retour </button>
+        <button class="btn btn-secondary" v-on:click="validateEquipe">Valider</button>
         <div name="modal" v-if="showModal" @close="showModal = false">
             <div class="modal-mask">
                 <div class="modal-wrapper">
@@ -29,7 +34,7 @@
                         <div class="modal-body">
                             <table class="table table-hover">
                                 <thead >
-                                    <tr class="bg-primary" style="color:white">
+                                    <tr class="bg-secondary" style="color:white">
                                         <th scope="col-md-2">matricule</th>
                                         <th scope="col-md-2">nom et prenom</th>
                                         <th scope="col-md-2">C.A</th>
@@ -56,7 +61,7 @@
                             </table>
                             <table class="table table-hover">
                                 <thead >
-                                    <tr class="bg-primary" style="color:white">
+                                    <tr class="bg-secondary" style="color:white">
                                         <th scope="col-md-2">matricule</th>
                                         <th scope="col-md-2 d-none">nom et prenom</th>
                                         <th scope="col-md-2">C.A</th>
@@ -89,8 +94,8 @@
                         </div>
                         <div class="modal-footer">
                             <slot name="footer">
-                                <button class="btn btn-primary" v-on:click="validateEquipe">Valider</button>
-                                <button class="btn btn-primary" v-on:click="showModal = false">retour</button>
+                                <button class="btn btn-secondary" v-on:click="validateEquipe">Valider</button>
+                                <button class="btn btn-secondary" v-on:click="showModal = false">retour</button>
                             </slot>
                         </div>
                     </div>

@@ -8,9 +8,9 @@
             </div>
         </div>
         <div class="row">
-            <table class="table table-hover">
+            <table class="table table-bordered table-head-bg-secondary table-bordered-bd-secondary">
                 <thead >
-                    <tr class="bg-primary" style="color:white">
+                    <tr class="bg-secondary" style="color:white">
                         <th scope="col-md-2">matricule</th>
                         <th scope="col-md-2 d-none">nom et prenom</th>
                         <th scope="col-md-2">C.A</th>
