@@ -266,5 +266,16 @@ class PersonnelController extends Controller
         return response()->json($response);
     }
 
+    public function getPersonnelData(Request $request){
+        $personnel = Personnel::where('Matricule',$request->matricule)
+        ->first();
+        $response = [
+            'success' => false,
+            'message' => 'resultat trouvé '.$request->matricule,
+            'personnel' => $personnel,
+        ];
+        return $response;
+    }
+
 }
 

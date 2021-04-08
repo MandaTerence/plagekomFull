@@ -7,7 +7,7 @@
                     {{ error }}
                 </div>
 
-                <div class="card card-default">
+                <div class="card">
                     <div class="card-header">Login</div>
                     <div class="card-body">
                         <form>

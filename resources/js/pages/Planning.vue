@@ -5,9 +5,9 @@
                 <label for="inputMission">Mission</label>
                 <select class="form-control" id="inputMission" v-model="idMission" v-on:change="reloadPlannig();">
                     <option v-bind:key="mission.Id_de_la_mission" v-bind:value="mission.Id_de_la_mission" v-for="mission in missions">{{ mission.Id_de_la_mission }}</option>
-                </select>
+                </select> 
             </div>
-        </div>
+        </div> 
     </div>
     <div>
         <div v-for="planningCoach in plannings" v-bind:key="planningCoach">
@@ -28,36 +28,44 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h3>Matin</h3>
-                            <table class="table" >
-                                <tr class="bg-primary" style="color:white">
-                                    <td> HEURE </td>
-                                    <td> MATRICULE </td>                    
-                                </tr>
-                                <tr>
-                                    <td> {{ formatHeure(planning.matin[0].Heure_debut) }} à {{ formatHeure(planning.matin[0].Heure_fin) }}  </td>
-                                    <td> {{ planning.matin[0].Commercial }} </td>                    
-                                </tr>
-                                <tr>
-                                    <td> {{ formatHeure(planning.matin[1].Heure_debut) }} à {{ formatHeure(planning.matin[1].Heure_fin) }}  </td>
-                                    <td> {{ planning.matin[1].Commercial }} </td>                    
-                                </tr>
+                            <table class="table table-bordered table-head-bg-secondary table-bordered-bd-secondary">
+                                <thead>
+                                    <tr>
+                                        <th> HEURE </th>
+                                        <th> MATRICULE </th>            
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> {{ formatHeure(planning.matin[0].Heure_debut) }} à {{ formatHeure(planning.matin[0].Heure_fin) }}  </td>
+                                        <td> {{ planning.matin[0].Commercial }} </td>                    
+                                    </tr>
+                                    <tr>
+                                        <td> {{ formatHeure(planning.matin[1].Heure_debut) }} à {{ formatHeure(planning.matin[1].Heure_fin) }}  </td>
+                                        <td> {{ planning.matin[1].Commercial }} </td>                    
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                         <div class="col-md-6">
                             <h3>Apres Midi</h3>
-                            <table class="table">
-                                <tr class="bg-primary" style="color:white">
-                                    <td> HEURE </td>
-                                    <td> MATRICULE </td>                    
-                                </tr>
-                                <tr>
-                                    <td> {{ formatHeure(planning.apresMidi[0].Heure_debut) }} à {{ formatHeure(planning.apresMidi[0].Heure_fin) }}  </td>
-                                    <td> {{ planning.apresMidi[0].Commercial }} </td>                    
-                                </tr>
-                                <tr>
-                                    <td> {{ formatHeure(planning.apresMidi[1].Heure_debut) }} à {{ formatHeure(planning.apresMidi[1].Heure_fin) }}  </td>
-                                    <td> {{ planning.apresMidi[1].Commercial }} </td>                    
-                                </tr>
+                            <table class="table table-bordered table-head-bg-secondary table-bordered-bd-secondary">
+                                <thead>
+                                    <tr>
+                                        <th> HEURE </th>
+                                        <th> MATRICULE </th>            
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> {{ formatHeure(planning.apresMidi[0].Heure_debut) }} à {{ formatHeure(planning.apresMidi[1].Heure_fin) }}  </td>
+                                        <td> {{ planning.apresMidi[0].Commercial }} </td>                    
+                                    </tr>
+                                    <tr>
+                                        <td> {{ formatHeure(planning.apresMidi[1].Heure_debut) }} à {{ formatHeure(planning.apresMidi[1].Heure_fin) }}  </td>
+                                        <td> {{ planning.apresMidi[1].Commercial }} </td>                    
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>  
@@ -88,9 +96,9 @@ export default {
         next();
     },
     created() {
-        this.loadURLdata();
         this.loadMissions();
         this.loadPlannig();
+        this.loadURLdata();
     },
     methods: {
         loadURLdata(){
@@ -105,7 +113,8 @@ export default {
             this.$axios.get('/api/missions',{params: {criteres: {Statut: 'En_cours'}}}) 
             .then(response => {
                 if(response.data.success){
-                    this.missions = response.data.data;     
+                    this.missions = response.data.missions;
+                    this.idMission = this.missions[0];  
                 }
                 else{
                     console.log(response.data.message);

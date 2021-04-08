@@ -325,9 +325,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="components/gridsystem.html">
-                                        <span class="sub-item">Calendrier du mois</span>
-                                    </a>
+                                    <router-link to="/planning"><span class="sub-item">Calendrier du mois</span></router-link>
                                 </li>
                                 <li>
                                     <a href="components/panels.html">

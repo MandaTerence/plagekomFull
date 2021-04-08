@@ -19,21 +19,23 @@ export default {
     },
     created() {
         this.loadURLdata();
+        
     },
     methods: {
         loadURLdata(){
             let urlParams = new URLSearchParams(window.location.search);
             if(urlParams.get('matricule')){
                 this.matricule = urlParams.get('matricule');
+                this.getPersonnel();
             }
         },
         getPersonnel(){
-            if(this.matricule!=''){
-                axios.get('/api/personnel/getFirstWhere',{params: {matricule : this.matricule}}).then(response => {
-                    this.personnelData = response.data.personnel;
-                    alert(this.personnelData);
-                });
-            }
+            this.$axios.get('/api/personnels/getPersonnelData',{params: {matricule: this.matricule }}) 
+            .then(response => {});
+            //axios.get('/api/personnel/getPersonnelData',{params: {criteres : ['Matricule',this.matricule]}}).then(response => {
+                //this.personnelData = response.data.personnel;
+                //alert(this.response);
+            //});
         }
     }
 }

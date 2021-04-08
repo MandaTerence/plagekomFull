@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Homepage</h1>
+        <h1>Bienvenue sur plagekom</h1>
     </div>
 </template>
 
@@ -11,6 +11,12 @@ export default {
         return {
             //
         }
+    },
+    beforeRouteEnter(to, from, next) {
+        if (!window.Laravel.isLoggedin) {
+            window.location.href = "/login";
+        }
+        next();
     },
     created() {
     },
