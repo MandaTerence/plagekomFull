@@ -261,7 +261,7 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="sidebar">			
+    <div class="sidebar" v-if="this.$route.name != 'login'">			
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
             <div class="sidebar-content">
                 <div class="user">

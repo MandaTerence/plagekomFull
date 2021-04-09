@@ -87,4 +87,5 @@ class Accompagnement extends Model
             ;
         }
     }
+    
 }

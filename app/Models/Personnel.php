@@ -247,4 +247,8 @@ class Personnel extends Model
         }
     }
 
+    public static function getDataCoach(){
+        $test = DB::table('test')->personnel;
+    }
+
 }

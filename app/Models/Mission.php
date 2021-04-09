@@ -18,10 +18,10 @@ class Mission extends Model
 
     protected $fillable = [
         'Id_de_la_mission',          
-        'Designation',                
+        'Designation',       
         'Type_de_mission',              
         'Date_de_fin',          
-        'Date_depart',                
+        'Date_depart',           
         'Statut',
     ];
 
